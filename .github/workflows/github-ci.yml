@@ -1,0 +1,22 @@
+image: coderus/sailfishos-platform-sdk-base:3.4.0.24
+
+before_script:
+ - source dumpling.env
+
+stages:
+ - build
+
+run-build:
+  stage: build
+  script:
+   - ./run-mic.sh
+
+  only:
+   - web
+   - tags
+
+  artifacts:
+    paths:
+     - sfe-*/*.zip
+     - sfe-*/*.zip.*sum
+
