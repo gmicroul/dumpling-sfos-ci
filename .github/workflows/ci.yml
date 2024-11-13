@@ -1,0 +1,36 @@
+name: Build and Test loop3
+on:
+  repository_dispatch:
+  workflow_dispatch:
+#on:
+#  push:
+#    branches:
+#      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+    
+    - run: |
+        sudo apt update
+        sudo apt install abootimg img2simg
+        git clone https://github.com/osm0sis/mkbootimg
+        cd mkbootimg
+        make
+        sudo make install
+        cd ..
+        source dumpling.env
+        bash run-mic.sh
+        ls -ltrh
+         
+      
+    - name: Upload a Build Artifact
+      #id: compile
+      uses: actions/upload-artifact@v4.3.0
+      with:
+        name: 'dumpling sailfishos images'
+        path: './*.zip*'
