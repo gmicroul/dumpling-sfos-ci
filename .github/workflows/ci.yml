@@ -20,6 +20,7 @@ jobs:
         git clone https://github.com/sailfishos/mic
         cd mic
         ls -ltrh
+        export VERSION=20.04
         make
         sudo make install
         cd ..
