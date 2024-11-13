@@ -16,22 +16,12 @@ jobs:
       uses: actions/checkout@v2
     
     - run: |
-        #sudo cat <<REPO >> /etc/apt-sources.list
-        #> deb http://download.meego.com/live/devel:/tools:/building/Ubuntu_20.04/ /
-        #> REPO
         sudo apt update
         git clone https://github.com/sailfishos/mic
         cd mic
         make
         sudo make install
         cd ..
-        #sudo apt install mic
-        #sudo apt install abootimg img2simg
-        #git clone https://github.com/osm0sis/mkbootimg
-        #cd mkbootimg
-        #make
-        #sudo make install
-        #cd ..
         source dumpling.env
         bash run-mic.sh
         ls -ltrh
