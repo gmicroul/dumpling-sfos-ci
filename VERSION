@@ -1,8 +1,1 @@
-VERSION
-*.py[oc]
-*~
-*.swp
-mic/__version__.py
-build/
-dist/
-mic.egg-info/
+- 1.0.2
