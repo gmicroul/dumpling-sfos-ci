@@ -19,6 +19,7 @@ jobs:
         sudo apt update
         git clone https://github.com/sailfishos/mic
         cd mic
+        ls -ltrh
         make
         sudo make install
         cd ..
