@@ -16,13 +16,15 @@ jobs:
       uses: actions/checkout@v2
     
     - run: |
+        sudo cat <<REPO >> /etc/apt-sources.list > deb http://download.meego.com/live/devel:/tools:/building/xUbuntu_20.04/ / > REPO
         sudo apt update
-        git clone https://github.com/sailfishos/mic
-        cd mic
-        ls -ltrh
-        make
-        sudo make install
-        cd ..
+        sudo apt install mic
+        #git clone https://github.com/sailfishos/mic
+        #cd mic
+        #ls -ltrh
+        #make
+        #sudo make install
+        #cd ..
         source dumpling.env
         bash run-mic.sh
         ls -ltrh
