@@ -1,4 +1,4 @@
-name: Build and Test loop3
+name: Build and Test sailfishos for dumpling
 on:
   repository_dispatch:
   workflow_dispatch:
@@ -17,12 +17,12 @@ jobs:
     
     - run: |
         sudo apt update
-        sudo apt install abootimg img2simg
-        git clone https://github.com/osm0sis/mkbootimg
-        cd mkbootimg
-        make
-        sudo make install
-        cd ..
+        #sudo apt install abootimg img2simg
+        #git clone https://github.com/osm0sis/mkbootimg
+        #cd mkbootimg
+        #make
+        #sudo make install
+        #cd ..
         source dumpling.env
         bash run-mic.sh
         ls -ltrh
