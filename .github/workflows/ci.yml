@@ -19,8 +19,9 @@ jobs:
         sudo apt update
         #git clone https://github.com/sailfishos/mic
         git clone https://github.com/jfding/mic
-        cd mic
+        
         wget https://github.com/gmicroul/dumpling-sfos-ci/raw/refs/heads/main/VERSION
+        cd mic
         ls -ltrh
         make
         sudo make install
