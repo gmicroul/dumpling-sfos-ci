@@ -21,8 +21,11 @@ jobs:
         git clone https://github.com/jfding/mic
         
         wget https://github.com/gmicroul/dumpling-sfos-ci/raw/refs/heads/main/VERSION
+        pwd
+        ls -ltrh
         cd mic
         ls -ltrh
+        pwd
         make
         sudo make install
         cd ..
