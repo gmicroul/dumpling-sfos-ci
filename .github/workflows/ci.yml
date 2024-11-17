@@ -24,6 +24,8 @@ jobs:
         pwd
         ls -ltrh
         cd mic
+        cp VERSION mic/
+        ls mic/ -ltrh
         ls -ltrh
         pwd
         make
