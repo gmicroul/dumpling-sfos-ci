@@ -37,10 +37,10 @@ jobs:
       - name: Archive artifacts
         run: |
           # Check the output directory inside Docker and then copy it
-          sudo docker exec sailfish-sdk ls -ltrh /workspace/sfe-dumpling-4.6.0.13-devel-20241119/
+          sudo docker exec sailfish-sdk ls -ltrh /workspace/sfe-dumpling-*/
           # Adjust the path based on the output of the previous step
           sudo mkdir -p /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts/
-          sudo docker cp sailfish-sdk:/workspace/sfe-dumpling-4.6.0.13-devel-20241119/sailfishos-dumpling-release-4.6.0.13-devel-20241119.zip /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts/
+          sudo docker cp sailfish-sdk:/workspace/sfe-dumpling-*/sailfishos-dumpling-release-*.zip /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
