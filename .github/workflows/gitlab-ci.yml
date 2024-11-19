@@ -18,7 +18,8 @@ jobs:
       - name: Set up Docker container
         run: |
           docker pull coderus/sailfishos-platform-sdk-base:latest
-          docker run --name sailfish-sdk -d coderus/sailfishos-platform-sdk-base:latest tail -f /dev/null
+          docker run --privileged --name sailfish-sdk -d coderus/sailfishos-platform-sdk-base:latest tail -f /dev/null
+          #docker run --name sailfish-sdk -d coderus/sailfishos-platform-sdk-base:latest tail -f /dev/null
 
       - name: Copy files into Docker container
         run: |
