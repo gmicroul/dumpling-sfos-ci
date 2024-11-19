@@ -5,6 +5,8 @@ export VENDOR="oneplus"
 export DEVICE="dumpling"
 export PORT_ARCH="armv7hl"
 export RELEASE="3.4.0.24"
+
+sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
 sudo mic create fs --arch=armv7hl \
                    --tokenmap=ARCH:armv7hl,RELEASE:$RELEASE,EXTRA_NAME:"$EXTRA_NAME" \
                    --record-pkgs=name,url \
