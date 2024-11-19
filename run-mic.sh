@@ -1,4 +1,10 @@
 #!/bin/bash
+export PLATFORM_SDK_ROOT="/srv/mer"
+export ANDROID_ROOT="/parentroot/srv/hadk"
+export VENDOR="oneplus"
+export DEVICE="dumpling"
+export PORT_ARCH="armv7hl"
+export RELEASE="3.4.0.24"
 sudo mic create fs --arch=armv7hl \
                    --tokenmap=ARCH:armv7hl,RELEASE:$RELEASE,EXTRA_NAME:"$EXTRA_NAME" \
                    --record-pkgs=name,url \
