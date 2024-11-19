@@ -46,8 +46,9 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: build-artifacts
-          path: ./artifacts/*.zip
+          name: build-artifacts-dumpling-sailfishos
+          #path: ./artifacts/*.zip
+          path: ${{ steps.get_zip_path.outputs.zip_path }}/*.zip
 
       - name: Cleanup
         run: |
