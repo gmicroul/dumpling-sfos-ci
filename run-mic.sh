@@ -6,8 +6,8 @@ export DEVICE="dumpling"
 export PORT_ARCH="armv7hl"
 export RELEASE="4.6.0.13"
 
-sudo mkdir -p /proc/sys/fs/binfmt_misc/
-sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
+#sudo mkdir -p /proc/sys/fs/binfmt_misc/
+#sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
 sudo mic create fs --arch=armv7hl \
                    --tokenmap=ARCH:armv7hl,RELEASE:$RELEASE,EXTRA_NAME:"$EXTRA_NAME" \
                    --record-pkgs=name,url \
