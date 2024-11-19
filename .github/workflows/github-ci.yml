@@ -1,0 +1,53 @@
+name: Build sailfishos for dumpling-new
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      set_example:
+        description: "oneplus"
+        required: true
+        default: "dumpling"
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker container
+        run: |
+          docker pull coderus/sailfishos-platform-sdk-base:latest
+          docker run --privileged --name sailfish-sdk -d coderus/sailfishos-platform-sdk-base:latest tail -f /dev/null
+
+      - name: Copy files into Docker container
+        run: |
+          docker cp . sailfish-sdk:/workspace
+
+      - name: Run build inside Docker
+        run: |
+          docker exec sailfish-sdk sh -c "cd /workspace && source ./dumpling.env && sudo bash ./run-mic.sh"
+
+      - name: List files in Docker container
+        run: |
+          docker exec sailfish-sdk ls -R /workspace  # List files recursively to verify output location
+
+      - name: Archive artifacts
+        run: |
+          # Check the output directory inside Docker and then copy it
+          docker exec sailfish-sdk ls /workspace/sfe-dumpling-*/sailfishos-*.zip
+          # Adjust the path based on the output of the previous step
+          docker cp sailfish-sdk:/workspace/sfe-dumpling-*/sailfishos-*.zip /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts/
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts-dumpling-sailfishos
+          path: /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts/*.zip
+
+      - name: Cleanup
+        run: |
+          docker stop sailfish-sdk
+          docker rm sailfish-sdk
