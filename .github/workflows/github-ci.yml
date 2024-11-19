@@ -49,5 +49,5 @@ jobs:
 
       - name: Cleanup
         run: |
-          docker stop sailfish-sdk
-          docker rm sailfish-sdk
+          sudo docker stop sailfish-sdk
+          sudo docker rm sailfish-sdk
