@@ -1,0 +1,32 @@
+name: Build Workflow 
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: coderus/sailfishos-platform-sdk-base:latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up environment
+        run: |
+          source mido.env
+
+      - name: Run build
+        run: |
+          ./run-mic.sh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts
+          path: sfe-*/*.zip
