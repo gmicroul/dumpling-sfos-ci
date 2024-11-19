@@ -1,4 +1,4 @@
-name: Build Workflow 
+name: Build Workflow
 
 on:
   push:
@@ -10,23 +10,35 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: coderus/sailfishos-platform-sdk-base:latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Set up environment
+      - name: Set up Docker container
         run: |
-          source mido.env
+          docker pull coderus/sailfishos-platform-sdk-base:latest
+          docker run --name sailfish-sdk -d coderus/sailfishos-platform-sdk-base:latest tail -f /dev/null
 
-      - name: Run build
+      - name: Copy files into Docker container
         run: |
-          ./run-mic.sh
+          docker cp . sailfish-sdk:/workspace
+          
+      - name: Run build inside Docker
+        run: |
+          docker exec sailfish-sdk sh -c "cd /workspace && source mido.env && ./run-mic.sh"
 
+      - name: Archive artifacts
+        run: |
+          docker cp sailfish-sdk:/workspace/sfe-*/*.zip ./artifacts
+          
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v2
         with:
           name: build-artifacts
-          path: sfe-*/*.zip
+          path: ./artifacts/*.zip
+
+      - name: Cleanup
+        run: |
+          docker stop sailfish-sdk
+          docker rm sailfish-sdk
