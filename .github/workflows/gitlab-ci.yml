@@ -26,7 +26,7 @@ jobs:
           
       - name: Run build inside Docker
         run: |
-          docker exec sailfish-sdk sh -c "cd /workspace && source mido.env && ./run-mic.sh"
+          docker exec sailfish-sdk sh -c "cd /workspace && source dumpling.env && ./run-mic.sh"
 
       - name: Archive artifacts
         run: |
