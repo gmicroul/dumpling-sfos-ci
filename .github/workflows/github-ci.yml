@@ -19,27 +19,27 @@ jobs:
 
       - name: Set up Docker container
         run: |
-          docker pull coderus/sailfishos-platform-sdk-base:latest
-          docker run --privileged --name sailfish-sdk -d coderus/sailfishos-platform-sdk-base:latest tail -f /dev/null
+          sudo docker pull coderus/sailfishos-platform-sdk-base:latest
+          sudo docker run --privileged --name sailfish-sdk -d coderus/sailfishos-platform-sdk-base:latest tail -f /dev/null
 
       - name: Copy files into Docker container
         run: |
-          docker cp . sailfish-sdk:/workspace
+          sudo docker cp . sailfish-sdk:/workspace
 
       - name: Run build inside Docker
         run: |
-          docker exec sailfish-sdk sh -c "cd /workspace && source ./dumpling.env && sudo bash ./run-mic.sh"
+          sudo docker exec sailfish-sdk sh -c "cd /workspace && sudo source ./dumpling.env && sudo bash ./run-mic.sh"
 
       - name: List files in Docker container
         run: |
-          docker exec sailfish-sdk ls -R /workspace  # List files recursively to verify output location
+          sudo docker exec sailfish-sdk ls -R /workspace  # List files recursively to verify output location
 
       - name: Archive artifacts
         run: |
           # Check the output directory inside Docker and then copy it
-          docker exec sailfish-sdk ls /workspace/sfe-dumpling-*/sailfishos-*.zip
+          sudo docker exec sailfish-sdk ls /workspace/sfe-dumpling-*/sailfishos-*.zip
           # Adjust the path based on the output of the previous step
-          docker cp sailfish-sdk:/workspace/sfe-dumpling-*/sailfishos-*.zip /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts/
+          sudo docker cp sailfish-sdk:/workspace/sfe-dumpling-*/sailfishos-*.zip /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
