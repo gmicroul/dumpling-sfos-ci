@@ -28,7 +28,7 @@ jobs:
 
       - name: Run build inside Docker
         run: |
-          sudo docker exec sailfish-sdk sh -c "cd /workspace && sudo source ./dumpling.env && sudo bash ./run-mic.sh"
+          sudo docker exec sailfish-sdk sh -c "cd /workspace && source ./dumpling.env && sudo bash ./run-mic.sh"
 
       - name: List files in Docker container
         run: |
