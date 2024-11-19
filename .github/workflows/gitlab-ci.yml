@@ -34,11 +34,11 @@ jobs:
       - name: Archive artifacts
         run: |
           #docker exec -it sailfish-sdk ls /workspace/sfe-*/
-          docker cp sailfish-sdk:/workspace/sfe-dumpling-3.4.0.24/sailfishos-3.4.0.24-20241119-dumpling.zip /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts
+          docker cp sailfish-sdk:/workspace/sfe-dumpling-3.4.0.24/sailfishos-3.4.0.24-20241119-dumpling.zip /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts/
           #ls -ltrh ./artifacts/
           pwd
           ls -ltrh
-          zip_path=$(readlink -f /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts)
+          zip_path=$(readlink -f /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts/)
           echo "Zip path: $zip_path"
           echo "::set-output name=zip_path::$zip_path"
         id: get_zip_path
