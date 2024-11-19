@@ -31,7 +31,9 @@ jobs:
 
       - name: Archive artifacts
         run: |
+          docker exec -it sailfish-sdk ls /workspace/sfe-*/
           docker cp sailfish-sdk:/workspace/sfe-*/*.zip ./artifacts
+          ls -ltrh ./artifacts/
           
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
