@@ -21,7 +21,7 @@ repo --name=jolla-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RELEA
 
 %packages
 #jolla-configuration-@DEVICE@
-jolla-configuration-fajita
+jolla-configuration-sdm845
 %end
 
 %attachment
