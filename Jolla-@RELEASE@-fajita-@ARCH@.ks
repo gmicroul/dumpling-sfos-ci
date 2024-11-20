@@ -21,7 +21,6 @@ repo --name=jolla-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RELEA
 
 %packages
 #jolla-configuration-@DEVICE@
-jolla-configuration-oneplus-sdm845
 %end
 
 %attachment
