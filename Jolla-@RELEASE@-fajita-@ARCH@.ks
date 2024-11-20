@@ -33,7 +33,7 @@ htop
 less
 nano
 rsync
-sfos-upgrade
+#sfos-upgrade
 %end
 
 %attachment
