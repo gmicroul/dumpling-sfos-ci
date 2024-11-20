@@ -21,6 +21,19 @@ repo --name=jolla-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RELEA
 
 %packages
 #jolla-configuration-@DEVICE@
+jolla-developer-mode
+busybox-static
+net-tools
+openssh-clients
+openssh-server
+vim-enhanced
+zypper
+strace
+htop
+less
+nano
+rsync
+sfos-upgrade
 %end
 
 %attachment
