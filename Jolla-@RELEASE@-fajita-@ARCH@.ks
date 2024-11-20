@@ -1,7 +1,7 @@
-# DisplayName: Jolla enchilada/@ARCH@ (release) 1+hybris.16.0.20200211164513.7466c31
+# DisplayName: Jolla fajita/@ARCH@ (release) 1+hybris.16.0.20200211164513.7466c31
 # KickstartType: release
-# DeviceModel: enchilada
-# DeviceVariant: enchilada
+# DeviceModel: fajita
+# DeviceVariant: fajita
 # Brand: Jolla
 # SuggestedImageType: fs
 # SuggestedArchitecture: armv7hl
@@ -13,8 +13,8 @@ part / --size 500 --ondisk sda --fstype=ext4
 
 ## No suitable configuration found in /tmp/sandbox/usr/share/ssu/kickstart/bootloader
 
-repo --name=adaptation-community-enchilada-@RELEASE@ --baseurl=http://repo.merproject.org/obs/nemo:/testing:/hw:/oneplus:/enchilada/sailfishos_@RELEASE@/
-repo --name=adaptation-community-common-enchilada-@RELEASE@ --baseurl=http://repo.merproject.org/obs/nemo:/testing:/hw:/common/sailfishos_@RELEASE@/
+repo --name=adaptation-community-fajita-@RELEASE@ --baseurl=http://repo.merproject.org/obs/nemo:/testing:/hw:/oneplus:/fajita/sailfishos_@RELEASE@/
+repo --name=adaptation-community-common-fajita-@RELEASE@ --baseurl=http://repo.merproject.org/obs/nemo:/testing:/hw:/common/sailfishos_@RELEASE@/
 repo --name=apps-@RELEASE@ --baseurl=https://releases.jolla.com/jolla-apps/@RELEASE@/@ARCH@/
 repo --name=hotfixes-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RELEASE@/hotfixes/@ARCH@/
 repo --name=jolla-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RELEASE@/jolla/@ARCH@/
@@ -24,7 +24,7 @@ jolla-configuration-@DEVICE@
 %end
 
 %attachment
-### Commands from /tmp/sandbox/usr/share/ssu/kickstart/attachment/enchilada
+### Commands from /tmp/sandbox/usr/share/ssu/kickstart/attachment/fajita
 /boot/hybris-boot.img
 /boot/hybris-updater-script
 /boot/hybris-updater-unpack.sh
