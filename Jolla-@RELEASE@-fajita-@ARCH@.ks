@@ -1,7 +1,7 @@
-# DisplayName: Jolla fajita/@ARCH@ (release) 1.5.4
+# DisplayName: Jolla enchilada/@ARCH@ (release) 1+hybris.16.0.20200211164513.7466c31
 # KickstartType: release
-# DeviceModel: fajita
-# DeviceVariant: fajita
+# DeviceModel: enchilada
+# DeviceVariant: enchilada
 # Brand: Jolla
 # SuggestedImageType: fs
 # SuggestedArchitecture: armv7hl
@@ -13,45 +13,36 @@ part / --size 500 --ondisk sda --fstype=ext4
 
 ## No suitable configuration found in /tmp/sandbox/usr/share/ssu/kickstart/bootloader
 
-repo --name=adaptation-community-fajita-@RELEASE@ --baseurl=http://repo.merproject.org/obs/nemo:/testing:/hw:/oneplus:/fajita/sailfishos_@RELEASE@/
-repo --name=adaptation-community-common-fajita-@RELEASE@ --baseurl=http://repo.merproject.org/obs/nemo:/testing:/hw:/common/sailfishos_@RELEASE@/
+repo --name=adaptation-community-enchilada-@RELEASE@ --baseurl=http://repo.merproject.org/obs/nemo:/testing:/hw:/oneplus:/enchilada/sailfishos_@RELEASE@/
+repo --name=adaptation-community-common-enchilada-@RELEASE@ --baseurl=http://repo.merproject.org/obs/nemo:/testing:/hw:/common/sailfishos_@RELEASE@/
 repo --name=apps-@RELEASE@ --baseurl=https://releases.jolla.com/jolla-apps/@RELEASE@/@ARCH@/
 repo --name=hotfixes-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RELEASE@/hotfixes/@ARCH@/
 repo --name=jolla-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RELEASE@/jolla/@ARCH@/
 
 %packages
-jolla-configuration-fajita
-jolla-developer-mode
-busybox-static
-net-tools
-openssh-clients
-openssh-server
-vim-enhanced
-zypper
-strace
-htop
-less
-nano
-rsync
-sfos-upgrade
+jolla-configuration-@DEVICE@
 %end
 
 %attachment
-### Commands from /tmp/sandbox/usr/share/ssu/kickstart/attachment/fajita
+### Commands from /tmp/sandbox/usr/share/ssu/kickstart/attachment/enchilada
 /boot/hybris-boot.img
+/boot/hybris-updater-script
+/boot/hybris-updater-unpack.sh
+/boot/update-binary
+
 %end
 
-%pre --erroronfail
+%pre
 export SSU_RELEASE_TYPE=release
 ### begin 01_init
 touch $INSTALL_ROOT/.bootstrap
 ### end 01_init
 %end
 
-%post --erroronfail
+%post
 export SSU_RELEASE_TYPE=release
 ### begin 01_arch-hack
-if [ "@ARCH@" == armv7hl ] || [ "@ARCH@" == armv7tnhl ] || [ "@ARCH@" == aarch64 ]; then
+if [ "@ARCH@" == armv7hl ] || [ "@ARCH@" == armv7tnhl ]; then
     # Without this line the rpm does not get the architecture right.
     echo -n "@ARCH@-meego-linux" > /etc/rpm/platform
 
@@ -98,18 +89,9 @@ else
     ssu mode 4
 fi
 ### end 60_ssu
-### begin 70_sdk-domain
-
-export SSU_DOMAIN=@RNDFLAVOUR@
-
-if [ "$SSU_RELEASE_TYPE" = "release" ] && [[ "$SSU_DOMAIN" = "public-sdk" ]];
-then
-    ssu domain sailfish
-fi
-### end 70_sdk-domain
 %end
 
-%post --nochroot --erroronfail
+%post --nochroot
 export SSU_RELEASE_TYPE=release
 ### begin 50_os-release
 (
@@ -120,36 +102,14 @@ cat $INSTALL_ROOT/etc/os-release
 echo "SAILFISH_CUSTOMER=\"${CUSTOMERS//$'\n'/ }\""
 ) > $IMG_OUT_DIR/os-release
 ### end 50_os-release
-### begin 99_check_shadow
-IS_BAD=0
-
-echo "Checking that no user has password set in /etc/shadow."
-# This grep prints users that have password set, normally nothing
-if grep -vE '^[^:]+:[*!]{1,2}:' $INSTALL_ROOT/etc/shadow
-then
-    echo "A USER HAS PASSWORD SET! THE IMAGE IS NOT SAFE!"
-    IS_BAD=1
-fi
-
-# Checking that all users use shadow in passwd,
-# if they weren't the check above would be useless
-if grep -vE '^[^:]+:x:' $INSTALL_ROOT/etc/passwd
-then
-    echo "BAD PASSWORD IN /etc/passwd! THE IMAGE IS NOT SAFE!"
-    IS_BAD=1
-fi
-
-# Fail image build if checks fail
-[ $IS_BAD -eq 0 ] && echo "No passwords set, good." || exit 1
-### end 99_check_shadow
 %end
 
-%pack --erroronfail
+%pack
 export SSU_RELEASE_TYPE=release
 ### begin hybris
 pushd $IMG_OUT_DIR # ./sfe-$DEVICE-$RELEASE_ID
 
-DEVICE=fajita
+DEVICE=@DEVICE@
 EXTRA_NAME=@EXTRA_NAME@
 DATE=$(date +"%Y%m%d") # 20191101
 
@@ -174,11 +134,11 @@ echo "[hybris-installer] Estimated rootfs size when installed: ${IMAGE_SIZE}M"
 
 # Output filenames
 DST_IMG=sfos-rootfs.tar.bz2
-DST_PKG=$ID-$VERSION_ID-$DATE-$DEVICE$EXTRA_NAME # sailfishos-3.2.0.12-20191101-$DEVICE
+DST_PKG=$ID-$VERSION_ID-$DATE-$DEVICE$EXTRA_NAME-SLOT_a # sailfishos-3.2.0.12-20191101-$DEVICE
 
 # Clone hybris-installer if not preset (e.g. porters-ci build env)
 if [ ! -d ../hybris/hybris-installer/ ]; then
-	git clone --depth 1 https://github.com/sailfishos-oneplus5/hybris-installer ../hybris/hybris-installer > /dev/null
+	git clone --recurse-submodules --depth 1 https://github.com/sailfish-oneplus6/hybris-installer ../hybris/hybris-installer > /dev/null
 fi
 
 # Copy rootfs & hybris-installer scripts into updater .zip tree
@@ -188,7 +148,7 @@ cp -r ../hybris/hybris-installer/hybris-installer/* updater/
 
 # Update install script with image details
 LOS_VER="16.0"
-sed -e "s/%DEVICE%/$DEVICE/g" -e "s/%VERSION%/$VERSION/g" -e "s/%VERSION_ID%/$VERSION_ID/g" -e "s/%DATE%/$DATE/g" -e "s/%IMAGE_SIZE%/${IMAGE_SIZE}M/g" -e "s/%DST_PKG%/$DST_PKG/g" -e "s/%LOS_VER%/$LOS_VER/g" -i updater/META-INF/com/google/android/update-binary
+sed -e "s/%DEVICE%/$DEVICE/g" -e "s/%VERSION%/$VERSION/g" -e "s/%DATE%/$DATE/g" -e "s/%IMAGE_SIZE%/${IMAGE_SIZE}M/g" -e "s/%DST_PKG%/$DST_PKG/g" -e "s/%LOS_VER%/$LOS_VER/g" -i updater/META-INF/com/google/android/update-binary
 
 # Pack updater .zip
 pushd updater # sfe-$DEVICE-$RELEASE_ID/updater
