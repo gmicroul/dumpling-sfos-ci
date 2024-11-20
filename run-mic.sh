@@ -2,9 +2,9 @@
 export PLATFORM_SDK_ROOT="/srv/mer"
 export ANDROID_ROOT="/parentroot/srv/hadk"
 export VENDOR="oneplus"
-export DEVICE="dumpling"
+export DEVICE="fajita"
 export PORT_ARCH="armv7hl"
-export RELEASE="3.4.0.24"
+export RELEASE="5.0.0.21"
 
 #sudo mkdir -p /proc/sys/fs/binfmt_misc/
 #sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
