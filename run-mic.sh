@@ -4,7 +4,7 @@ export ANDROID_ROOT="/parentroot/srv/hadk"
 export VENDOR="oneplus"
 export DEVICE="dumpling"
 export PORT_ARCH="armv7hl"
-export RELEASE="4.6.0.16"
+export RELEASE="5.0.0.0"
 
 sudo mkdir -p /proc/sys/fs/binfmt_misc/
 sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
