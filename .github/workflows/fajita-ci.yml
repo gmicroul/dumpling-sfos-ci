@@ -28,7 +28,7 @@ jobs:
 
       - name: Run build inside Docker
         run: |
-          sudo docker exec sailfish-sdk sh -c "cd /workspace && source ./fajita.env && sudo bash ./run-mic.sh"
+          sudo docker exec sailfish-sdk sh -c "cd /workspace && source ./fajita.env && sudo bash ./run-mic1.sh"
 
       - name: List files in Docker container
         run: |
@@ -40,7 +40,7 @@ jobs:
           sudo docker exec sailfish-sdk ls -ltrh /workspace/sfe-fajita-4.6.0.15/
           # Adjust the path based on the output of the previous step
           sudo mkdir -p /home/runner/work/fajita-sfos-ci/fajita-sfos-ci/artifacts/
-          sudo docker cp sailfish-sdk:/workspace/sfe-fajita-4.6.0.15/--20241120-@DEVICE@-SLOT_a.zip /home/runner/work/fajita-sfos-ci/fajita-sfos-ci/artifacts/
+          sudo docker cp sailfish-sdk:/workspace/sfe-fajita-4.6.0.15/--20241121-@DEVICE@-SLOT_a.zip /home/runner/work/fajita-sfos-ci/fajita-sfos-ci/artifacts/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
