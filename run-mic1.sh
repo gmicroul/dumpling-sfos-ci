@@ -6,8 +6,8 @@ export DEVICE="fajita"
 export PORT_ARCH="aarch64"
 export RELEASE="4.6.0.15"
 
-#sudo mkdir -p /proc/sys/fs/binfmt_misc/
-#sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
+sudo mkdir -p /proc/sys/fs/binfmt_misc/
+sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
 sudo mic create fs --arch=$PORT_ARCH \
                    --tokenmap=ARCH:$PORT_ARCH,RELEASE:$RELEASE,EXTRA_NAME:"$EXTRA_NAME" \
                    --record-pkgs=name,url \
