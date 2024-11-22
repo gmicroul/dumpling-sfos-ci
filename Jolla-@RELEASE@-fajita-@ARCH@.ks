@@ -20,7 +20,16 @@ repo --name=hotfixes-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RE
 repo --name=jolla-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RELEASE@/jolla/@ARCH@/
 
 %packages
-patterns-sailfish-device-configuration-sdm845
+jolla-developer-mode
+sailfishsilica-qt5-demos
+busybox-static
+net-tools
+openssh-clients
+openssh-server
+vim-enhanced
+zypper
+strace
+jolla-rnd-device
 %end
 
 %attachment
