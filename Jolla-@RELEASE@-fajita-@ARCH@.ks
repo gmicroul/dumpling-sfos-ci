@@ -20,7 +20,7 @@ repo --name=hotfixes-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RE
 repo --name=jolla-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RELEASE@/jolla/@ARCH@/
 
 %packages
-patterns-sailfish-device-configuration-fajita
+patterns-sailfish-device-configuration-sdm845
 %end
 
 %attachment
