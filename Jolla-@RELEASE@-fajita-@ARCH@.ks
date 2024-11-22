@@ -20,17 +20,7 @@ repo --name=hotfixes-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RE
 repo --name=jolla-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RELEASE@/jolla/@ARCH@/
 
 %packages
-jolla-developer-mode
-busybox-static
-net-tools
-openssh-clients
-openssh-server
-vim-enhanced
-zypper
-strace
-htop
-less
-nano
+patterns-sailfish-device-configuration-fajita
 %end
 
 %attachment
