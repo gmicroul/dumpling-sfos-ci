@@ -4,7 +4,7 @@ export ANDROID_ROOT="/parentroot/srv/hadk"
 export VENDOR="xiaomi"
 export DEVICE="davinci"
 export PORT_ARCH="armv7hl"
-export EXTRA_NAME=-devel-`date +%Y%m%d-%H%m%S`
+export EXTRA_NAME=-devel-`date`
 export RELEASE="3.4.0.24"
 
 sudo mic create fs --arch=$PORT_ARCH \
