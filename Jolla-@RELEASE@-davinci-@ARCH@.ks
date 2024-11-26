@@ -21,6 +21,7 @@ repo --name=jolla-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RELEA
 
 %packages
 @Jolla Configuration davinci
+libhybris-libGLESv1
 %end
 
 %attachment
