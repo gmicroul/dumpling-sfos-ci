@@ -3,7 +3,7 @@ export PLATFORM_SDK_ROOT="/srv/mer"
 export ANDROID_ROOT="/parentroot/srv/hadk"
 export VENDOR="xiaomi"
 export DEVICE="davinci"
-export PORT_ARCH="aarch64"
+export PORT_ARCH="armv7hl"
 export EXTRA_NAME=-devel-`date +%Y%m%d-%H%m%S`
 export RELEASE="3.4.0.24"
 
