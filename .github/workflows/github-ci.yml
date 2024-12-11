@@ -52,3 +52,12 @@ jobs:
         run: |
           sudo docker stop sailfish-sdk
           sudo docker rm sailfish-sdk
+      - name: Upload image to Release
+        uses: ncipollo/release-action@main
+        with:
+          tag: SailfishOS_for_dumpling
+          artifacts: /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts/*.zip
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            SailfishOS_for_dumpling
