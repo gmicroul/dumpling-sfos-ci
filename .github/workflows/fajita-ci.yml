@@ -40,7 +40,7 @@ jobs:
           sudo docker exec sailfish-sdk ls -ltrh /workspace/sfe-fajita-4.6.0.15/
           # Adjust the path based on the output of the previous step
           sudo mkdir -p /home/runner/work/fajita-sfos-ci/fajita-sfos-ci/artifacts/
-          sudo docker cp sailfish-sdk:/workspace/sfe-fajita-4.6.0.15/--20241122-@DEVICE@-SLOT_a.zip /home/runner/work/fajita-sfos-ci/fajita-sfos-ci/artifacts/
+          sudo docker cp sailfish-sdk:/workspace/sfe-fajita-4.6.0.15/--20241211-@DEVICE@-SLOT_a.zip /home/runner/work/fajita-sfos-ci/fajita-sfos-ci/artifacts/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
@@ -52,3 +52,13 @@ jobs:
         run: |
           sudo docker stop sailfish-sdk
           sudo docker rm sailfish-sdk
+          
+      - name: Upload image to Release
+        uses: ncipollo/release-action@main
+        with:
+          tag: SailfishOS_for_fajita
+          artifacts:  /home/runner/work/fajita-sfos-ci/fajita-sfos-ci/artifacts/*.zip
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            SailfishOS_for_fajita
