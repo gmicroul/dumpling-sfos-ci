@@ -31,7 +31,7 @@ vim-enhanced
 zypper
 strace
 jolla-rnd-device
-#patterns-sailfish-device-configuration-fajita
+patterns-sailfish-device-configuration-fajita
 %end
 
 %attachment
