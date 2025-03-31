@@ -1,0 +1,159 @@
+#=================================================
+# Description: Build Android HAL and dhd packages using GitHub Actions
+# Lisence: MIT
+# Author: 0312birdzhang
+#=================================================
+
+name: Build SailfishOS dhd--mido
+
+on: 
+  release:
+    types: [published]
+  push:
+    branches: 
+      - mido
+
+permissions:
+  contents: write
+
+jobs:
+
+  build:
+    runs-on: ubuntu-20.04
+
+    env:
+      DEVICE: mido
+      VENDOR: xiaomi
+      ANDROID_ROOT: /home/runner/work/ci/ci/hadk_14.1/
+      SAILFISH_SDK_VERSION: 4.5.0.16
+
+    steps:
+    - name: Maximize build space
+      uses: easimon/maximize-build-space@master
+      with:
+        root-reserve-mb: 20480
+        swap-size-mb: 1024
+        remove-dotnet: 'true'
+        remove-haskell: 'true'
+        remove-android: 'true'
+        remove-docker-images: 'true'
+
+    - name: Free Disk Space (Ubuntu)
+      uses: jlumbroso/free-disk-space@main
+      with:
+        # this might remove tools that are actually needed,
+        # if set to "true" but frees about 6 GB
+        tool-cache: true
+        
+        # all of these default to true, but feel free to set to
+        # "false" if necessary for your workflow
+        android: true
+        dotnet: true
+        haskell: true
+        large-packages: true
+        swap-storage: true
+
+    - name: Checkout
+      uses: actions/checkout@master
+
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+      with:
+        platforms: all
+
+    - name: Initialization environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+        openjdk-8-jdk android-tools-adb bc bison \
+        build-essential curl flex g++-multilib gcc-multilib gnupg gperf \
+        imagemagick lib32ncurses-dev qemu-user-static \
+        lib32readline-dev lib32z1-dev  liblz4-tool libncurses5-dev libsdl1.2-dev libssl-dev \
+        libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc yasm zip zlib1g-dev \
+        qemu-user-static qemu-system-arm e2fsprogs simg2img \
+        libtinfo5 libncurses5 gzip virtualenv git python2
+
+
+    - name: Download repo bin file
+      run: |
+        mkdir -p ~/bin
+        wget 'https://storage.googleapis.com/git-repo-downloads/repo' -P ~/bin
+        chmod +x ~/bin/repo
+        git config --global user.name "mido"
+        git config --global user.email "mido@gmail.com"
+
+
+    - name: Downloading source code
+      run: |
+        source hadk.env
+        mkdir -p $ANDROID_ROOT
+        cd $ANDROID_ROOT
+        repo init -u https://github.com/mer-hybris/android.git -b hybris-14.1 --depth=1
+        repo sync -j8 -c --no-clone-bundle --no-tags
+        git clone https://github.com/piggz/android_device_xiaomi_mido.git -b pgz-14.1 $ANDROID_ROOT/device/xiaomi/mido --depth=1 
+        git clone https://gitlab.com/the-muppets/proprietary_vendor_xiaomi.git -b cm-14.1 $ANDROID_ROOT/vendor/xiaomi/tmp --depth=1
+        mv $ANDROID_ROOT/vendor/xiaomi/tmp/mido $ANDROID_ROOT/vendor/xiaomi/mido
+        rm -rf $ANDROID_ROOT/vendor/xiaomi/tmp
+        git clone https://github.com/piggz/android_kernel_xiaomi_msm8953.git -b pgz-14.1-eb8 $ANDROID_ROOT/kernel/xiaomi/msm8953 --depth=1
+    
+    - name: Clone device spec source
+      run: |
+        source hadk.env
+        cd $ANDROID_ROOT
+        repo sync -j8 -c --no-clone-bundle --no-tags #rerun once
+        rm -rf $ANDROID_ROOT/hybris/hybris-boot
+        git clone https://github.com/Sailfish-On-vince/hybris-boot.git $ANDROID_ROOT/hybris/hybris-boot
+        git clone https://github.com/Sailfish-On-vince/hybris-installer.git $ANDROID_ROOT/hybris/hybris-installer
+        git clone --recurse-submodules https://github.com/Sailfish-On-vince/droid-hal-vince.git -b for_mido $ANDROID_ROOT/rpm 
+        git clone --recurse-submodules https://github.com/0312birdzhang/droid-config-mido.git $ANDROID_ROOT/hybris/droid-configs
+        git clone --recurse-submodules https://github.com/piggz/droid-hal-version-mido.git $ANDROID_ROOT/hybris/droid-hal-version-mido
+        rm -rf $ANDROID_ROOT/external/droidmedia
+        git clone https://github.com/sailfishos/droidmedia.git $ANDROID_ROOT/external/droidmedia
+
+    - name: Cache build output
+      uses: actions/cache@v3
+      id: build-cache
+      with:
+        path: ${{env.ANDROID_ROOT}}/out
+        key: build-hal-${{ hashFiles('kernel/xiaomi/msm8953/arch/arm64/configs/mido_defconfig') }}
+        restore-keys: |
+          build-hal-
+
+    - name: Build HAL
+      # if: steps.build-cache.outputs.cache-hit != 'true'
+      run: |
+        chmod +x build-hal.sh
+        sudo ln -sf /usr/bin/python2.7 /usr/bin/python
+        bash build-hal.sh
+      shell: bash
+
+    - name: Build dhd in container
+      run: |
+        chmod +x build-rpm.sh
+        sudo docker pull coderus/sailfishos-platform-sdk:$SAILFISH_SDK_VERSION
+        sudo docker run --privileged -v /home/runner/work:/home/mersdk/work coderus/sailfishos-platform-sdk:$SAILFISH_SDK_VERSION  /bin/sh /home/mersdk/work/ci/ci/build-rpm.sh
+      shell: bash
+
+    - name: Check free disk
+      if: failure()
+      run: |
+        df -h
+      shell: bash
+
+    - name: Upload flashable zip
+      uses: actions/upload-artifact@master
+      with:
+        name: sailfishos.zip
+        path: ${{env.ANDROID_ROOT}}/SailfishOScommunity-release-*/sailfishos-*-${{env.DEVICE}}*.zip
+
+    - name: Upload image to Release
+      uses: ncipollo/release-action@main
+      #if: steps.compile.outputs.status == 'success' && !cancelled()
+      with:
+        tag: mido
+        artifacts: ${{env.ANDROID_ROOT}}/SailfishOScommunity-release-*/sailfishos-*-${{env.DEVICE}}*.zip
+        allowUpdates: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        body: |
+          This is SailfishOS for Mido
