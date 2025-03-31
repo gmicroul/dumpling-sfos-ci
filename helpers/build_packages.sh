@@ -371,7 +371,7 @@ if [ "$BUILDIMAGE" = "1" ]; then
     ks="Jolla-@RELEASE@-$DEVICE-@ARCH@.ks"
     #hack, why?
     mkdir -p $srcks
-    cp /home/mersdk/work/ci/ci/Jolla-@RELEASE@-$DEVICE-@ARCH@.ks $srcks/$ks
+    cp /home/mersdk/work/dumpling-sfos-ci/dumpling-sfos-ci/Jolla-@RELEASE@-$DEVICE-@ARCH@.ks $srcks/$ks
 
     if sdk-assistant maintain $VENDOR-$DEVICE-$PORT_ARCH ssu s 2>/dev/null | grep -q "Release (rnd): latest (devel)"; then
         bleeding_edge_build_by_sailors=1
