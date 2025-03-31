@@ -5,13 +5,20 @@
 #=================================================
 
 name: Build SailfishOS dhd--mido
-
-on: 
-  release:
-    types: [published]
-  push:
-    branches: 
-      - mido
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      set_example:
+        description: "xiaomi"
+        required: true
+        default: "mido"
+#on: 
+#  release:
+#    types: [published]
+#  push:
+#    branches: 
+#      - mido
 
 permissions:
   contents: write
