@@ -2,8 +2,8 @@
 
 set -x
 
-source /home/mersdk/work/ci/ci/hadk.env
-export ANDROID_ROOT=/home/mersdk/work/ci/ci/hadk_14.1
+source /home/mersdk/work/dumpling-sfos-ci/dumpling-sfos-ci/hadk.env
+export ANDROID_ROOT=/home/mersdk/work/dumpling-sfos-ci/dumpling-sfos-ci/hadk_14.1
 
 sudo chown -R mersdk:mersdk $ANDROID_ROOT
 cd $ANDROID_ROOT
@@ -29,7 +29,7 @@ sb2 -t $VENDOR-$DEVICE-$PORT_ARCH -m sdk-install -R zypper in -y ccache
 # dhd
 cd $ANDROID_ROOT/rpm/dhd
 git checkout 365b0f45755f20e4cba6e97d981f908cc1b0bb09
-cp /home/mersdk/work/ci/ci/helpers/*.sh $ANDROID_ROOT/rpm/dhd/helpers/
+cp /home/mersdk/work/dumpling-sfos-ci/dumpling-sfos-ci/helpers/*.sh $ANDROID_ROOT/rpm/dhd/helpers/
 chmod +x $ANDROID_ROOT/rpm/dhd/helpers/*.sh
 
 # dhc for 64bit
