@@ -87,8 +87,8 @@ jobs:
         mkdir -p ~/bin
         wget 'https://storage.googleapis.com/git-repo-downloads/repo' -P ~/bin
         chmod +x ~/bin/repo
-        git config --global user.name "mido"
-        git config --global user.email "mido@gmail.com"
+        git config --global user.name "BirdZhang"
+        git config --global user.email "0312birdzhang@gmail.com"
 
 
     - name: Downloading source code
