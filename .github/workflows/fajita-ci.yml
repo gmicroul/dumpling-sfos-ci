@@ -43,7 +43,7 @@ jobs:
           sudo docker cp sailfish-sdk:/workspace/sfe-fajita-4.6.0.15/--20241211-@DEVICE@-SLOT_a.zip /home/runner/work/fajita-sfos-ci/fajita-sfos-ci/artifacts/
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-fajita-sailfishos
           path: /home/runner/work/fajita-sfos-ci/fajita-sfos-ci/artifacts/*.zip
