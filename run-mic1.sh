@@ -3,7 +3,7 @@ export PLATFORM_SDK_ROOT="/srv/mer"
 export ANDROID_ROOT="/parentroot/srv/hadk"
 export VENDOR="oneplus"
 export DEVICE="fajita"
-export PORT_ARCH="armv7hl"
+export PORT_ARCH="aarch64"
 export RELEASE="4.6.0.15"
 
 sudo mkdir -p /proc/sys/fs/binfmt_misc/
