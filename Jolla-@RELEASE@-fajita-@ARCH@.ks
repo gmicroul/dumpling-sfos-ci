@@ -39,6 +39,7 @@ repo --name=jolla-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RELEA
 #strace
 #jolla-rnd-device
 #droid-config-fajita-bluez5
+droid-config-fajita
 patterns-sailfish-device-configuration-fajita
 %end
 
