@@ -26,7 +26,8 @@ repo --name=hotfixes-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RE
 repo --name=jolla-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RELEASE@/jolla/@ARCH@/
 
 %packages
-jolla-configuration-dumpling
+patterns-sailfish-device-configuration-dumpling
+#jolla-configuration-dumpling
 jolla-developer-mode
 busybox-static
 net-tools
