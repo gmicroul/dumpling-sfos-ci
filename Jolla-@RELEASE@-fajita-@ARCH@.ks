@@ -27,7 +27,7 @@ repo --name=hotfixes-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RE
 repo --name=jolla-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RELEASE@/jolla/@ARCH@/
 
 %packages
-@Jolla Configuration fajita
+#@Jolla Configuration fajita
 #jolla-configuration-fajita
 #jolla-developer-mode
 #sailfishsilica-qt5-demos
@@ -41,7 +41,7 @@ repo --name=jolla-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RELEA
 #jolla-rnd-device
 #droid-config-fajita-bluez5
 #droid-config-fajita
-#patterns-sailfish-device-configuration-fajita
+patterns-sailfish-device-configuration-fajita
 %end
 
 %attachment
