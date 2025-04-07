@@ -140,6 +140,7 @@ jobs:
         chmod +x build-rpm.sh
         sudo docker pull coderus/sailfishos-platform-sdk:$SAILFISH_SDK_VERSION
         sudo docker run --privileged -v /home/runner/work:/home/mersdk/work coderus/sailfishos-platform-sdk:$SAILFISH_SDK_VERSION  /bin/sh /home/mersdk/work/dumpling-sfos-ci/dumpling-sfos-ci/build-rpm.sh
+        ls -R /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/hadk_14.1/
       shell: bash
 
     - name: Check free disk
