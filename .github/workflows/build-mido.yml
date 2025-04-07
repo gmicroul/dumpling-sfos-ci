@@ -31,7 +31,7 @@ jobs:
     env:
       DEVICE: mido
       VENDOR: xiaomi
-      ANDROID_ROOT: /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/hadk_14.1/
+      ANDROID_ROOT: /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/hadk_14.1
       SAILFISH_SDK_VERSION: 4.5.0.16
 
     steps:
