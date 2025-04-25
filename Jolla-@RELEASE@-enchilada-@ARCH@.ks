@@ -159,7 +159,8 @@ DST_PKG=$ID-$VERSION_ID-$DATE-$DEVICE$EXTRA_NAME-SLOT_a # sailfishos-3.2.0.12-20
 
 # Clone hybris-installer if not preset (e.g. porters-ci build env)
 if [ ! -d ../hybris/hybris-installer/ ]; then
-	git clone --recurse-submodules --depth 1 https://github.com/sailfish-oneplus6/hybris-installer ../hybris/hybris-installer > /dev/null
+	git clone --depth 1 https://github.com/sailfishos-oneplus5/hybris-installer ../hybris/hybris-installer > /dev/null
+	#git clone --recurse-submodules --depth 1 https://github.com/sailfish-oneplus6/hybris-installer ../hybris/hybris-installer > /dev/null
 fi
 
 # Copy rootfs & hybris-installer scripts into updater .zip tree
