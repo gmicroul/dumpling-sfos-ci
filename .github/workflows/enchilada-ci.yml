@@ -40,7 +40,7 @@ jobs:
           sudo docker exec sailfish-sdk ls -ltrh /workspace/sfe-enchilada-5.0.0.62/
           # Adjust the path based on the output of the previous step
           sudo mkdir -p /home/runner/work/enchilada-sfos-ci/enchilada-sfos-ci/artifacts/
-          sudo docker cp sailfish-sdk:/workspace/sfe-enchilada-5.0.0.62/sailfishos-5.0.0.62-20250421-@DEVICE@-SLOT_a.zip /home/runner/work/enchilada-sfos-ci/enchilada-sfos-ci/artifacts/
+          sudo docker cp sailfish-sdk:/workspace/sfe-enchilada-5.0.0.62/sailfishos-5.0.0.62-20250425-@DEVICE@-SLOT_a.zip /home/runner/work/enchilada-sfos-ci/enchilada-sfos-ci/artifacts/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
