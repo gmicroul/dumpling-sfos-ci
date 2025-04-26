@@ -130,7 +130,8 @@ export SSU_RELEASE_TYPE=release
 ### begin hybris
 pushd $IMG_OUT_DIR # ./sfe-$DEVICE-$RELEASE_ID
 
-DEVICE=@DEVICE@
+#DEVICE=@DEVICE@
+DEVICE=enchilada
 EXTRA_NAME=@EXTRA_NAME@
 DATE=$(date +"%Y%m%d") # 20191101
 
