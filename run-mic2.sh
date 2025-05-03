@@ -4,7 +4,7 @@ export ANDROID_ROOT="/parentroot/srv/hadk"
 export VENDOR="oneplus"
 export DEVICE="enchilada"
 export PORT_ARCH="aarch64"
-export RELEASE="5.0.0.62"
+export RELEASE="5.0.0.67"
 
 sudo mkdir -p /proc/sys/fs/binfmt_misc/
 sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
