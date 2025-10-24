@@ -37,10 +37,10 @@ jobs:
       - name: Archive artifacts
         run: |
           # Check the output directory inside Docker and then copy it
-          sudo docker exec sailfish-sdk ls -ltrh /workspace/sfe-latte-4.0.1.48/
+          sudo docker exec sailfish-sdk ls -ltrh /workspace/sfe-latte-4.5.0.18/
           # Adjust the path based on the output of the previous step
           sudo mkdir -p /home/runner/work/latte-sfos-ci/latte-sfos-ci/artifacts/
-          sudo docker cp sailfish-sdk:/workspace/sfe-latte-4.0.1.48/sailfishos-4.0.1.48-20251024-latte-SLOT_a.zip /home/runner/work/latte-sfos-ci/latte-sfos-ci/artifacts/
+          sudo docker cp sailfish-sdk:/workspace/sfe-latte-4.5.0.18/sailfishos-4.5.0.18-20251024-latte-SLOT_a.zip /home/runner/work/latte-sfos-ci/latte-sfos-ci/artifacts/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
