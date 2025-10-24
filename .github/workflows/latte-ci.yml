@@ -1,0 +1,63 @@
+name: Build sailfishos for latte-new
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      set_example:
+        description: "oneplus"
+        required: true
+        default: "latte"
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker container
+        run: |
+          sudo docker pull coderus/sailfishos-platform-sdk-base:latest
+          sudo docker run --privileged --name sailfish-sdk -d coderus/sailfishos-platform-sdk-base:latest tail -f /dev/null
+
+      - name: Copy files into Docker container
+        run: |
+          sudo docker cp . sailfish-sdk:/workspace
+
+      - name: Run build inside Docker
+        run: |
+          sudo docker exec sailfish-sdk sh -c "cd /workspace && source ./latte.env && sudo bash ./run-mic.sh"
+
+      - name: List files in Docker container
+        run: |
+          sudo docker exec sailfish-sdk ls -R /workspace  # List files recursively to verify output location
+
+      - name: Archive artifacts
+        run: |
+          # Check the output directory inside Docker and then copy it
+          sudo docker exec sailfish-sdk ls -ltrh /workspace/sfe-latte-3.4.0.24/
+          # Adjust the path based on the output of the previous step
+          sudo mkdir -p /home/runner/work/latte-sfos-ci/latte-sfos-ci/artifacts/
+          sudo docker cp sailfish-sdk:/workspace/sfe-latte-3.4.0.24/sailfishos-3.4.0.24-20250407-latte.zip /home/runner/work/latte-sfos-ci/latte-sfos-ci/artifacts/
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-latte-sailfishos
+          path: /home/runner/work/latte-sfos-ci/latte-sfos-ci/artifacts/*.zip
+
+      - name: Cleanup
+        run: |
+          sudo docker stop sailfish-sdk
+          sudo docker rm sailfish-sdk
+      - name: Upload image to Release
+        uses: ncipollo/release-action@main
+        with:
+          tag: SailfishOS_for_latte
+          artifacts: /home/runner/work/latte-sfos-ci/latte-sfos-ci/artifacts/*.zip
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            SailfishOS_for_latte
