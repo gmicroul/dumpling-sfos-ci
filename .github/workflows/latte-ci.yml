@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       set_example:
-        description: "oneplus"
+        description: "xiaomi"
         required: true
         default: "latte"
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
@@ -28,7 +28,7 @@ jobs:
 
       - name: Run build inside Docker
         run: |
-          sudo docker exec sailfish-sdk sh -c "cd /workspace && source ./latte.env && sudo bash ./run-mic-latte.sh"
+          sudo docker exec sailfish-sdk sh -c "cd /workspace && source ./latte.env && sudo bash ./run-mic1.sh"
 
       - name: List files in Docker container
         run: |
@@ -37,26 +37,27 @@ jobs:
       - name: Archive artifacts
         run: |
           # Check the output directory inside Docker and then copy it
-          sudo docker exec sailfish-sdk ls -ltrh /workspace/sfe-latte-3.4.0.24/
+          sudo docker exec sailfish-sdk ls -ltrh /workspace/sfe-latte-5.0.0.68/
           # Adjust the path based on the output of the previous step
           sudo mkdir -p /home/runner/work/latte-sfos-ci/latte-sfos-ci/artifacts/
-          sudo docker cp sailfish-sdk:/workspace/sfe-latte-3.4.0.24/sailfishos-3.4.0.24-20251024-latte.zip /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts/
+          sudo docker cp sailfish-sdk:/workspace/sfe-latte-5.0.0.68/sailfishos-5.0.0.68-20251024-latte-SLOT_a.zip /home/runner/work/latte-sfos-ci/latte-sfos-ci/artifacts/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-latte-sailfishos
-          path: /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts/*.zip
+          path: /home/runner/work/latte-sfos-ci/latte-sfos-ci/artifacts/*.zip
 
       - name: Cleanup
         run: |
           sudo docker stop sailfish-sdk
           sudo docker rm sailfish-sdk
+          
       - name: Upload image to Release
         uses: ncipollo/release-action@main
         with:
           tag: SailfishOS_for_latte
-          artifacts: /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts/*.zip
+          artifacts:  /home/runner/work/latte-sfos-ci/latte-sfos-ci/artifacts/*.zip
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
