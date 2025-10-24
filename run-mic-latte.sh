@@ -4,7 +4,7 @@ export ANDROID_ROOT="/parentroot/srv/hadk"
 export VENDOR="xiaomi"
 export DEVICE="latte"
 export PORT_ARCH="i486"
-export RELEASE="5.0.0.62"
+export RELEASE="5.0.0.68"
 #export RELEASE="5.0.0.62"
 
 sudo mkdir -p /proc/sys/fs/binfmt_misc/
