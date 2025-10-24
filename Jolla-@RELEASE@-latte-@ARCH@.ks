@@ -3,7 +3,7 @@
 # DeviceModel: latte
 # DeviceVariant:latte
 # SuggestedImageType: fs
-# SuggestedArchitecture: armv7hl
+# SuggestedArchitecture: i486
 
 timezone --utc UTC
 
@@ -22,7 +22,7 @@ repo --name=jolla-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RELEA
 
 %packages
 patterns-sailfish-device-configuration-latte
-mesa-libglapi
+#mesa-libglapi
 %end
 
 %attachment
