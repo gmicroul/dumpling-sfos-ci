@@ -13,7 +13,7 @@ part / --size 500 --ondisk sda --fstype=ext4
 
 ## No suitable configuration found in /tmp/sandbox/usr/share/ssu/kickstart/bootloader
 
-repo --name=adaptation-community-enchilada-@RELEASE@ --baseurl=http://repo.merproject.org/obs/nemo:/testing:/hw:/oneplus:/enchilada/sailfishos_@RELEASE@/
+#repo --name=adaptation-community-enchilada-@RELEASE@ --baseurl=http://repo.merproject.org/obs/nemo:/testing:/hw:/oneplus:/enchilada/sailfishos_@RELEASE@/
 #repo --name=adaptation-community-common-enchilada-@RELEASE@-@ARCH@ --baseurl=http://repo.merproject.org/obs/nemo:/testing:/hw:/common/sailfishos_@RELEASE@_@ARCH@/
 #repo --name=apps-@RELEASE@ --baseurl=https://releases.jolla.com/jolla-apps/@RELEASE@/@ARCH@/
 #repo --name=hotfixes-@RELEASE@ --baseurl=https://releases.jolla.com/releases/@RELEASE@/hotfixes/@ARCH@/
