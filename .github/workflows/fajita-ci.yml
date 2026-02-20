@@ -37,10 +37,10 @@ jobs:
       - name: Archive artifacts
         run: |
           # Check the output directory inside Docker and then copy it
-          sudo docker exec sailfish-sdk ls -ltrh /workspace/sfe-fajita-5.0.0.71/
+          sudo docker exec sailfish-sdk ls -ltrh /workspace/sfe-fajita-5.0.0.73/
           # Adjust the path based on the output of the previous step
           sudo mkdir -p /home/runner/work/fajita-sfos-ci/fajita-sfos-ci/artifacts/
-          sudo docker cp sailfish-sdk:/workspace/sfe-fajita-5.0.0.71/sailfishos-5.0.0.71-20251031-fajita-SLOT_a.zip /home/runner/work/fajita-sfos-ci/fajita-sfos-ci/artifacts/
+          sudo docker cp sailfish-sdk:/workspace/sfe-fajita-5.0.0.73/sailfishos-5.0.0.73-20260221-fajita-SLOT_a.zip /home/runner/work/fajita-sfos-ci/fajita-sfos-ci/artifacts/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
