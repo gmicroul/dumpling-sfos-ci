@@ -64,7 +64,11 @@ jobs:
           libssl-dev \
           libxml2-utils \
           xsltproc \
-          zip
+          zip \
+          gcc-aarch64-linux-gnu \
+          g++-aarch64-linux-gnu \
+          gcc-arm-linux-gnueabihf \
+          g++-arm-linux-gnueabihf
 
     - name: Cache kernel build
       uses: actions/cache@v4
@@ -96,25 +100,6 @@ jobs:
         git clone --depth 1 --single-branch --branch lineage-16.0 \
           https://github.com/VerdandiTeam/android_kernel_oneplus_sdm845-stable.git \
           kernel/oneplus/sdm845
-
-        # Download prebuilt toolchain from kernel.org
-        mkdir -p prebuilts/gcc/linux-x86/aarch64
-        cd prebuilts/gcc/linux-x86/aarch64
-        wget https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/11.3.0/x86_64-gcc-11.3.0-nolibc-aarch64-linux.tar.xz
-        tar xf x86_64-gcc-11.3.0-nolibc-aarch64-linux.tar.xz
-        # Find the extracted directory and rename it
-        EXTRACTED_DIR=$(ls -d x86_64-* | head -1)
-        mv "$EXTRACTED_DIR" aarch64-linux-android
-        cd -
-
-        mkdir -p prebuilts/gcc/linux-x86/arm
-        cd prebuilts/gcc/linux-x86/arm
-        wget https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/11.3.0/x86_64-gcc-11.3.0-nolibc-arm-linux-gnueabi.tar.xz
-        tar xf x86_64-gcc-11.3.0-nolibc-arm-linux-gnueabi.tar.xz
-        # Find the extracted directory and rename it
-        EXTRACTED_DIR=$(ls -d x86_64-* | head -1)
-        mv "$EXTRACTED_DIR" arm-linux-androideabi
-        cd -
 
     - name: Apply kernel patches for Docker support
       run: |
@@ -181,11 +166,11 @@ jobs:
       run: |
         cd $ANDROID_ROOT/kernel/oneplus/sdm845/
 
-        # Setup build environment
+        # Setup build environment using Ubuntu cross-compilers
         export ARCH=arm64
         export SUBARCH=arm64
-        export CROSS_COMPILE=$ANDROID_ROOT/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android/bin/aarch64-linux-android-
-        export PATH=$ANDROID_ROOT/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android/bin:$PATH
+        export CROSS_COMPILE=aarch64-linux-gnu-
+        export PATH=/usr/bin:$PATH
 
         # Find the correct defconfig
         if [ -f arch/arm64/configs/fajita_defconfig ]; then
