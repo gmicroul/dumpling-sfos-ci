@@ -22,6 +22,7 @@ env:
   RELEASE: ${{ github.event.inputs.release || '5.0.0.73' }}
   ANDROID_ROOT: /home/runner/work/android
   PLATFORM_SDK_ROOT: /srv/mer
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build-hybris-boot:
