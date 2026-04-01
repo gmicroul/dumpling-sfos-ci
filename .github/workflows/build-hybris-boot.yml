@@ -93,8 +93,8 @@ jobs:
         echo "https://x-access-token:${GITHUB_TOKEN}@github.com" > ~/.git-credentials
 
         # Clone only the kernel (much smaller than full Android source)
-        git clone --depth 1 --single-branch --branch lineage-16.0 \
-          https://github.com/LineageOS/android_kernel_oneplus_sdm845.git \
+        git clone --depth 1 --single-branch --branch stable \
+          https://github.com/VerdandiTeam/android_kernel_oneplus_sdm845-stable.git \
           kernel/oneplus/sdm845
 
         # Download prebuilt toolchain from kernel.org
@@ -120,11 +120,29 @@ jobs:
       run: |
         cd $ANDROID_ROOT/kernel/oneplus/sdm845/
 
+        # List available defconfigs
+        echo "Available defconfigs:"
+        ls arch/arm64/configs/*_defconfig
+
+        # Find the correct defconfig for fajita
+        if [ -f arch/arm64/configs/fajita_defconfig ]; then
+          DEFCONFIG=fajita_defconfig
+        elif [ -f arch/arm64/configs/lineage_fajita_defconfig ]; then
+          DEFCONFIG=lineage_fajita_defconfig
+        elif [ -f arch/arm64/configs/sdm845_defconfig ]; then
+          DEFCONFIG=sdm845_defconfig
+        else
+          echo "Error: No suitable defconfig found for fajita"
+          exit 1
+        fi
+
+        echo "Using defconfig: $DEFCONFIG"
+
         # Backup original config
-        cp arch/arm64/configs/fajita_defconfig arch/arm64/configs/fajita_defconfig.bak
+        cp arch/arm64/configs/$DEFCONFIG arch/arm64/configs/$DEFCONFIG.bak
 
         # Add Docker kernel options
-        cat >> arch/arm64/configs/fajita_defconfig << 'EOF'
+        cat >> arch/arm64/configs/$DEFCONFIG << 'EOF'
 
         # Docker support
         CONFIG_NAMESPACES=y
@@ -157,7 +175,7 @@ jobs:
         EOF
 
         # Show added config
-        tail -30 arch/arm64/configs/fajita_defconfig
+        tail -30 arch/arm64/configs/$DEFCONFIG
 
     - name: Build kernel
       run: |
@@ -169,8 +187,22 @@ jobs:
         export CROSS_COMPILE=$ANDROID_ROOT/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android/bin/aarch64-linux-android-
         export PATH=$ANDROID_ROOT/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android/bin:$PATH
 
+        # Find the correct defconfig
+        if [ -f arch/arm64/configs/fajita_defconfig ]; then
+          DEFCONFIG=fajita_defconfig
+        elif [ -f arch/arm64/configs/lineage_fajita_defconfig ]; then
+          DEFCONFIG=lineage_fajita_defconfig
+        elif [ -f arch/arm64/configs/sdm845_defconfig ]; then
+          DEFCONFIG=sdm845_defconfig
+        else
+          echo "Error: No suitable defconfig found for fajita"
+          exit 1
+        fi
+
+        echo "Building with defconfig: $DEFCONFIG"
+
         # Build kernel
-        make fajita_defconfig
+        make $DEFCONFIG
         make -j$(nproc)
 
         # Check if kernel image was built
@@ -207,19 +239,53 @@ jobs:
         retention-days: 30
 
     - name: Upload kernel config
+      run: |
+        cd $ANDROID_ROOT/kernel/oneplus/sdm845/
+
+        # Find the correct defconfig
+        if [ -f arch/arm64/configs/fajita_defconfig ]; then
+          DEFCONFIG=fajita_defconfig
+        elif [ -f arch/arm64/configs/lineage_fajita_defconfig ]; then
+          DEFCONFIG=lineage_fajita_defconfig
+        elif [ -f arch/arm64/configs/sdm845_defconfig ]; then
+          DEFCONFIG=sdm845_defconfig
+        else
+          echo "Error: No suitable defconfig found for fajita"
+          exit 1
+        fi
+
+        # Copy config to output
+        mkdir -p $ANDROID_ROOT/output
+        cp arch/arm64/configs/$DEFCONFIG $ANDROID_ROOT/output/kernel.config
+
+    - name: Upload kernel config artifact
       uses: actions/upload-artifact@v4
       with:
         name: kernel-config-${{ env.DEVICE }}
-        path: ${{ env.ANDROID_ROOT }}/kernel/oneplus/sdm845/arch/arm64/configs/fajita_defconfig
+        path: ${{ env.ANDROID_ROOT }}/output/kernel.config
         retention-days: 30
 
     - name: Generate build summary
       run: |
+        cd $ANDROID_ROOT/kernel/oneplus/sdm845/
+
+        # Find the correct defconfig
+        if [ -f arch/arm64/configs/fajita_defconfig ]; then
+          DEFCONFIG=fajita_defconfig
+        elif [ -f arch/arm64/configs/lineage_fajita_defconfig ]; then
+          DEFCONFIG=lineage_fajita_defconfig
+        elif [ -f arch/arm64/configs/sdm845_defconfig ]; then
+          DEFCONFIG=sdm845_defconfig
+        else
+          DEFCONFIG="unknown"
+        fi
+
         echo "## Build Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "- **Device**: ${{ env.DEVICE }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Release**: ${{ env.RELEASE }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Kernel**: sdm845" >> $GITHUB_STEP_SUMMARY
+        echo "- **Defconfig**: $DEFCONFIG" >> $GITHUB_STEP_SUMMARY
         echo "- **Docker Support**: Enabled" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### Artifacts" >> $GITHUB_STEP_SUMMARY
