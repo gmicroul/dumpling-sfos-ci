@@ -57,8 +57,6 @@ jobs:
           bc \
           bison \
           flex \
-          g++-multilib \
-          gcc-multilib \
           lib32ncurses-dev \
           lib32z1-dev \
           libssl-dev \
