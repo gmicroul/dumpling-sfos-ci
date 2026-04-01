@@ -102,14 +102,18 @@ jobs:
         cd prebuilts/gcc/linux-x86/aarch64
         wget https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/11.3.0/x86_64-gcc-11.3.0-nolibc-aarch64-linux.tar.xz
         tar xf x86_64-gcc-11.3.0-nolibc-aarch64-linux.tar.xz
-        mv x86_64-gcc-11.3.0-nolibc-aarch64-linux aarch64-linux-android
+        # Find the extracted directory and rename it
+        EXTRACTED_DIR=$(ls -d x86_64-* | head -1)
+        mv "$EXTRACTED_DIR" aarch64-linux-android
         cd -
 
         mkdir -p prebuilts/gcc/linux-x86/arm
         cd prebuilts/gcc/linux-x86/arm
         wget https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/11.3.0/x86_64-gcc-11.3.0-nolibc-arm-linux-gnueabi.tar.xz
         tar xf x86_64-gcc-11.3.0-nolibc-arm-linux-gnueabi.tar.xz
-        mv x86_64-gcc-11.3.0-nolibc-arm-linux-gnueabi arm-linux-androideabi
+        # Find the extracted directory and rename it
+        EXTRACTED_DIR=$(ls -d x86_64-* | head -1)
+        mv "$EXTRACTED_DIR" arm-linux-androideabi
         cd -
 
     - name: Apply kernel patches for Docker support
