@@ -1,4 +1,4 @@
- name: Build Hybris Boot Image
+name: Build Hybris Boot Image
 
 on:
   workflow_dispatch:
@@ -91,7 +91,7 @@ jobs:
         cd $ANDROID_ROOT
 
         # Initialize repo (adjust manifest URL as needed)
-        repo init -u https://github.com/LineageOS/android.git -b lineage-17.1
+        repo init -u https://github.com/LineageOS/android.git -b lineage-16.0
 
         # Sync source (use partial sync to save time)
         repo sync -c -j4 --no-tags --no-clone-bundle --optimized-fetch --prune
