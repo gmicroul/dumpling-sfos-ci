@@ -192,9 +192,8 @@ jobs:
         # Build kernel
         make $DEFCONFIG
 
-        # Disable problematic drivers
-        sed -i 's/CONFIG_BT_BTFM_SLIM=y/# CONFIG_BT_BTFM_SLIM is not set/' .config || true
-        sed -i 's/CONFIG_BT_BTFM_SLIM=m/# CONFIG_BT_BTFM_SLIM is not set/' .config || true
+        # Disable problematic bluetooth driver by renaming the source file
+        mv drivers/bluetooth/btfm_slim.c drivers/bluetooth/btfm_slim.c.disabled || true
 
         make -j$(nproc)
 
