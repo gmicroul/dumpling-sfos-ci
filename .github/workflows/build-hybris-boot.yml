@@ -164,11 +164,15 @@ jobs:
       run: |
         cd $ANDROID_ROOT/kernel/oneplus/sdm845/
 
+        # Create symlinks for cross-compilers
+        sudo ln -sf /usr/bin/aarch64-linux-gnu-gcc-12 /usr/bin/aarch64-linux-gnu-gcc
+        sudo ln -sf /usr/bin/aarch64-linux-gnu-g++-12 /usr/bin/aarch64-linux-gnu-g++
+
         # Setup build environment using Ubuntu cross-compilers
         export ARCH=arm64
         export SUBARCH=arm64
         export CROSS_COMPILE=aarch64-linux-gnu-
-        export CC=aarch64-linux-gnu-gcc-12
+        export CC=aarch64-linux-gnu-gcc
         export PATH=/usr/bin:$PATH
 
         # Find the correct defconfig
