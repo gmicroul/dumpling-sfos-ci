@@ -1,4 +1,4 @@
-name: Build Hybris Boot Image
+ name: Build Hybris Boot Image
 
 on:
   workflow_dispatch:
@@ -61,7 +61,7 @@ jobs:
           flex \
           g++-multilib \
           gcc-multilib \
-          lib32ncurses5-dev \
+          lib32ncurses-dev \
           lib32z1-dev \
           libssl-dev \
           libxml2-utils \
