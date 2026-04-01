@@ -65,10 +65,10 @@ jobs:
           libxml2-utils \
           xsltproc \
           zip \
-          gcc-aarch64-linux-gnu \
-          g++-aarch64-linux-gnu \
-          gcc-arm-linux-gnueabihf \
-          g++-arm-linux-gnueabihf
+          gcc-12-aarch64-linux-gnu \
+          g++-12-aarch64-linux-gnu \
+          gcc-12-arm-linux-gnueabihf \
+          g++-12-arm-linux-gnueabihf
 
     - name: Cache kernel build
       uses: actions/cache@v4
@@ -170,6 +170,7 @@ jobs:
         export ARCH=arm64
         export SUBARCH=arm64
         export CROSS_COMPILE=aarch64-linux-gnu-
+        export CC=aarch64-linux-gnu-gcc-12
         export PATH=/usr/bin:$PATH
 
         # Find the correct defconfig
