@@ -97,13 +97,13 @@ jobs:
           https://github.com/LineageOS/android_kernel_oneplus_sdm845.git \
           kernel/oneplus/sdm845
 
-        # Clone minimal toolchain
+        # Clone minimal toolchain (use AOSP prebuilts)
         git clone --depth 1 --single-branch \
-          https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android.git \
+          https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64.git \
           prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android
 
         git clone --depth 1 --single-branch \
-          https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi.git \
+          https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm.git \
           prebuilts/gcc/linux-x86/arm/arm-linux-androideabi
 
     - name: Apply kernel patches for Docker support
