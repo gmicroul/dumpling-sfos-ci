@@ -192,8 +192,9 @@ jobs:
         # Build kernel
         make $DEFCONFIG
 
-        # Remove problematic driver from Makefile
+        # Remove problematic drivers from Makefile
         sed -i '/btfm_slim\.o/d' drivers/bluetooth/Makefile || true
+        sed -i '/btfm_slim_codec\.o/d' drivers/bluetooth/Makefile || true
 
         make -j$(nproc)
 
