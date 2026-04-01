@@ -21,7 +21,6 @@ env:
   DEVICE: ${{ github.event.inputs.device || 'fajita' }}
   RELEASE: ${{ github.event.inputs.release || '5.0.0.73' }}
   ANDROID_ROOT: /home/runner/work/android
-  PLATFORM_SDK_ROOT: /srv/mer
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
@@ -77,13 +76,6 @@ jobs:
         key: android-${{ env.DEVICE }}-${{ github.sha }}
         restore-keys: |
           android-${{ env.DEVICE }}-
-
-    - name: Setup Mer SDK
-      run: |
-        # Download and install Mer SDK
-        wget -O mer-sdk-installer https://img.merproject.org/images/mer-sdk-install-latest-chroot
-        chmod +x mer-sdk-installer
-        sudo ./mer-sdk-installer -d /srv/mer -n
 
     - name: Clone Android source
       run: |
