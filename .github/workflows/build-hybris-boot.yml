@@ -53,7 +53,6 @@ jobs:
           python3 \
           python3-pip \
           openjdk-8-jdk \
-          repo \
           rsync \
           bc \
           bison \
@@ -67,26 +66,34 @@ jobs:
           xsltproc \
           zip
 
-    - name: Cache Android build
+    - name: Cache kernel build
       uses: actions/cache@v4
       with:
         path: |
           ~/.ccache
-          /home/runner/work/android/.repo
-        key: android-${{ env.DEVICE }}-${{ github.sha }}
+          /home/runner/work/android/kernel
+        key: kernel-${{ env.DEVICE }}-${{ github.sha }}
         restore-keys: |
-          android-${{ env.DEVICE }}-
+          kernel-${{ env.DEVICE }}-
 
-    - name: Clone Android source
+    - name: Clone kernel source
       run: |
         mkdir -p $ANDROID_ROOT
         cd $ANDROID_ROOT
 
-        # Initialize repo (adjust manifest URL as needed)
-        repo init -u https://github.com/LineageOS/android.git -b lineage-16.0
+        # Clone only the kernel (much smaller than full Android source)
+        git clone --depth 1 --branch lineage-16.0 \
+          https://github.com/LineageOS/android_kernel_oneplus_sdm845.git \
+          kernel/oneplus/sdm845
 
-        # Sync source (use partial sync to save time)
-        repo sync -c -j4 --no-tags --no-clone-bundle --optimized-fetch --prune
+        # Clone minimal toolchain
+        git clone --depth 1 \
+          https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android.git \
+          prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android
+
+        git clone --depth 1 \
+          https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi.git \
+          prebuilts/gcc/linux-x86/arm/arm-linux-androideabi
 
     - name: Apply kernel patches for Docker support
       run: |
@@ -133,42 +140,49 @@ jobs:
 
     - name: Build kernel
       run: |
-        cd $ANDROID_ROOT
+        cd $ANDROID_ROOT/kernel/oneplus/sdm845/
 
         # Setup build environment
-        source build/envsetup.sh
-        lunch ${{ env.DEVICE }}-userdebug
+        export ARCH=arm64
+        export SUBARCH=arm64
+        export CROSS_COMPILE=$ANDROID_ROOT/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android/bin/aarch64-linux-android-
+        export PATH=$ANDROID_ROOT/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android/bin:$PATH
 
-        # Build boot image
-        make bootimage -j$(nproc)
+        # Build kernel
+        make fajita_defconfig
+        make -j$(nproc)
 
-    - name: Extract hybris-boot.img
-      run: |
-        cd $ANDROID_ROOT
-
-        # Find boot image
-        BOOT_IMG=$(find out/target/product/${{ env.DEVICE }} -name "boot.img" | head -1)
-
-        if [ -z "$BOOT_IMG" ]; then
-          echo "Error: boot.img not found"
+        # Check if kernel image was built
+        if [ ! -f arch/arm64/boot/Image.gz-dtb ]; then
+          echo "Error: Kernel image not found"
           exit 1
         fi
 
-        echo "Found boot image: $BOOT_IMG"
+        ls -lh arch/arm64/boot/Image.gz-dtb
 
-        # Copy to output directory
+    - name: Create boot image
+      run: |
+        cd $ANDROID_ROOT
+
+        # Create output directory
         mkdir -p output
-        cp $BOOT_IMG output/hybris-boot.img
 
-        # Get image info
-        ls -lh output/hybris-boot.img
-        file output/hybris-boot.img
+        # Copy kernel image
+        cp kernel/oneplus/sdm845/arch/arm64/boot/Image.gz-dtb output/
 
-    - name: Upload hybris-boot.img
+        # Note: For a complete boot image, you would need:
+        # - Original boot.img from device
+        # - mkbootimg tool to repack
+        # This is a simplified version that just builds the kernel
+
+        echo "Kernel image extracted to output/Image.gz-dtb"
+        ls -lh output/
+
+    - name: Upload kernel image
       uses: actions/upload-artifact@v4
       with:
-        name: hybris-boot-${{ env.DEVICE }}-${{ env.RELEASE }}
-        path: output/hybris-boot.img
+        name: kernel-${{ env.DEVICE }}-${{ env.RELEASE }}
+        path: output/Image.gz-dtb
         retention-days: 30
 
     - name: Upload kernel config
@@ -188,5 +202,9 @@ jobs:
         echo "- **Docker Support**: Enabled" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### Artifacts" >> $GITHUB_STEP_SUMMARY
-        echo "- hybris-boot.img" >> $GITHUB_STEP_SUMMARY
+        echo "- Image.gz-dtb (kernel image)" >> $GITHUB_STEP_SUMMARY
         echo "- kernel config" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Note" >> $GITHUB_STEP_SUMMARY
+        echo "This workflow builds only the kernel. To create a complete boot.img," >> $GITHUB_STEP_SUMMARY
+        echo "you need to repack it with mkbootimg using the original boot image from your device." >> $GITHUB_STEP_SUMMARY
