@@ -192,8 +192,8 @@ jobs:
         # Build kernel
         make $DEFCONFIG
 
-        # Disable problematic bluetooth driver by renaming the source file
-        mv drivers/bluetooth/btfm_slim.c drivers/bluetooth/btfm_slim.c.disabled || true
+        # Remove problematic driver from Makefile
+        sed -i '/btfm_slim\.o/d' drivers/bluetooth/Makefile || true
 
         make -j$(nproc)
 
