@@ -79,6 +79,7 @@ jobs:
     - name: Clone kernel source
       env:
         GIT_TERMINAL_PROMPT: 0
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         mkdir -p $ANDROID_ROOT
         cd $ANDROID_ROOT
@@ -86,6 +87,10 @@ jobs:
         # Configure git to avoid interactive prompts
         git config --global user.email "actions@github.com"
         git config --global user.name "GitHub Actions"
+
+        # Setup git credential helper for GitHub
+        git config --global credential.helper store
+        echo "https://x-access-token:${GITHUB_TOKEN}@github.com" > ~/.git-credentials
 
         # Clone only the kernel (much smaller than full Android source)
         git clone --depth 1 --single-branch --branch lineage-16.0 \
