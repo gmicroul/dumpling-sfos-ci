@@ -202,6 +202,45 @@ jobs:
         # Remove problematic mdss-dsi-pll-10nm driver
         sed -i '/mdss-dsi-pll-10nm/d' drivers/clk/qcom/mdss/Makefile || true
 
+        # Remove problematic glink drivers (depend on tracer_pkt)
+        rm -rf drivers/soc/qcom/glink.c || true
+        rm -rf drivers/soc/qcom/glink_loopback_server.c || true
+        sed -i '/glink/d' drivers/soc/qcom/Makefile || true
+
+        # Remove problematic slimbus drivers (depend on sps)
+        rm -rf drivers/slimbus/slim-msm.c || true
+        rm -rf drivers/slimbus/slim-msm-ngd.c || true
+        sed -i '/slim-msm/d' drivers/slimbus/Makefile || true
+
+        # Remove problematic diag drivers (depend on usb_diag)
+        rm -rf drivers/char/diag/diag_usb.c || true
+        sed -i '/diag_usb/d' drivers/char/diag/Makefile || true
+
+        # Remove problematic crypto drivers (depend on sps)
+        rm -rf drivers/crypto/msm/qce50.c || true
+        sed -i '/qce50/d' drivers/crypto/msm/Makefile || true
+
+        # Remove problematic spi drivers (depend on sps)
+        rm -rf drivers/spi/spi_qsd.c || true
+        sed -i '/spi_qsd/d' drivers/spi/Makefile || true
+
+        # Remove problematic coresight drivers (depend on usb_qdss and sps)
+        rm -rf drivers/hwtracing/coresight/coresight-tmc.c || true
+        rm -rf drivers/hwtracing/coresight/coresight-tmc-etr.c || true
+        sed -i '/coresight-tmc/d' drivers/hwtracing/coresight/Makefile || true
+
+        # Remove problematic bluetooth-power driver (depends on btfm_slim)
+        rm -rf drivers/bluetooth/bluetooth-power.c || true
+        sed -i '/bluetooth-power/d' drivers/bluetooth/Makefile || true
+
+        # Remove problematic power supply drivers (depend on external functions)
+        rm -rf drivers/power/supply/qcom/qpnp-fg-gen3.c || true
+        rm -rf drivers/power/supply/qcom/qpnp-smb2.c || true
+        rm -rf drivers/power/supply/qcom/smb-lib.c || true
+        sed -i '/qpnp-fg-gen3/d' drivers/power/supply/qcom/Makefile || true
+        sed -i '/qpnp-smb2/d' drivers/power/supply/qcom/Makefile || true
+        sed -i '/smb-lib/d' drivers/power/supply/qcom/Makefile || true
+
         # Remove entire msm GPU directory (kgsl/adreno - not needed for basic boot)
         rm -rf drivers/gpu/msm || true
 
