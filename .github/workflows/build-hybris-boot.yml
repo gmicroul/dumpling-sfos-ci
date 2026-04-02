@@ -224,6 +224,8 @@ jobs:
         sed -i '/cdsp-loader/d' drivers/soc/qcom/qdsp6v2/Makefile || true
         # Remove entire qdsp6v2 directory if it's empty
         rm -rf drivers/soc/qcom/qdsp6v2 || true
+        # Remove qdsp6v2 reference from Makefile
+        sed -i '/qdsp6v2/d' drivers/soc/qcom/Makefile || true
 
         # Remove problematic peripheral-loader driver (depends on subsystem)
         rm -rf drivers/soc/qcom/peripheral-loader.c || true
