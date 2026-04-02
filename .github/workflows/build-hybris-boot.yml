@@ -215,6 +215,7 @@ jobs:
         # Remove problematic diag drivers (depend on usb_diag)
         rm -rf drivers/char/diag/diag_usb.c || true
         sed -i '/diag_usb/d' drivers/char/diag/Makefile || true
+        sed -i '/diagchar/d' drivers/char/diag/Makefile || true
 
         # Remove problematic crypto drivers (depend on sps)
         rm -rf drivers/crypto/msm/qce50.c || true
