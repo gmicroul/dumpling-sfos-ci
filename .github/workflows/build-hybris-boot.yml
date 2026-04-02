@@ -214,6 +214,9 @@ jobs:
         # Remove problematic tracer_pkt driver (not needed for basic boot)
         sed -i '/tracer_pkt/d' drivers/soc/qcom/Makefile || true
 
+        # Remove problematic USB gadget configfs driver (not needed for basic boot)
+        sed -i '/configfs\.o/d' drivers/usb/gadget/Makefile || true
+
         # Build kernel only (skip device tree to avoid interposer errors)
         make -j$(nproc) Image.gz
 
