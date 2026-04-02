@@ -198,6 +198,9 @@ jobs:
         # Remove problematic mdss-dsi-pll-10nm driver
         sed -i '/mdss-dsi-pll-10nm/d' drivers/clk/qcom/mdss/Makefile || true
 
+        # Remove problematic kgsl driver
+        sed -i '/kgsl_trace\.o/d' drivers/gpu/msm/Makefile || true
+
         # Build kernel only (skip device tree)
         make -j$(nproc) Image.gz-dtb
 
