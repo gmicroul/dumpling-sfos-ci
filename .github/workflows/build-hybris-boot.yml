@@ -202,6 +202,66 @@ jobs:
         # Remove problematic mdss-dsi-pll-10nm driver
         sed -i '/mdss-dsi-pll-10nm/d' drivers/clk/qcom/mdss/Makefile || true
 
+        # Remove problematic smp2p_sleepstate driver (depends on msm_ipc_router)
+        rm -rf drivers/soc/qcom/smp2p_sleepstate.c || true
+        sed -i '/smp2p_sleepstate/d' drivers/soc/qcom/Makefile || true
+
+        # Remove problematic qmi_interface driver (depends on msm_ipc_router)
+        rm -rf drivers/soc/qcom/qmi_interface.c || true
+        sed -i '/qmi_interface/d' drivers/soc/qcom/Makefile || true
+
+        # Remove problematic ipc_router_socket driver (depends on msm_ipc_router)
+        rm -rf net/ipc_router/ipc_router_socket.c || true
+        sed -i '/ipc_router_socket/d' net/ipc_router/Makefile || true
+
+        # Remove problematic ipc_router_security driver (depends on msm_ipc_router)
+        rm -rf net/ipc_router/ipc_router_security.c || true
+        sed -i '/ipc_router_security/d' net/ipc_router/Makefile || true
+
+        # Remove entire ipc_router directory if it's empty
+        rm -rf net/ipc_router || true
+        sed -i '/ipc_router/d' net/Makefile || true
+
+        # Remove problematic vidc drivers (depend on msm_comm)
+        rm -rf drivers/media/platform/msm/vidc/msm_vidc_common.c || true
+        rm -rf drivers/media/platform/msm/vidc/venus_hfi.c || true
+        rm -rf drivers/media/platform/msm/vidc/msm_v4l2_vidc.c || true
+        rm -rf drivers/media/platform/msm/vidc/msm_vdec.c || true
+        rm -rf drivers/media/platform/msm/vidc/msm_venc.c || true
+        rm -rf drivers/media/platform/msm/vidc/msm_vidc_debug.c || true
+        rm -rf drivers/media/platform/msm/vidc/msm_vidc_res_parse.c || true
+        rm -rf drivers/media/platform/msm/vidc/vidc_hfi.c || true
+        rm -rf drivers/media/platform/msm/vidc/msm_vidc_clocks.c || true
+        sed -i '/msm_vidc_common/d' drivers/media/platform/msm/vidc/Makefile || true
+        sed -i '/venus_hfi/d' drivers/media/platform/msm/vidc/Makefile || true
+        sed -i '/msm_v4l2_vidc/d' drivers/media/platform/msm/vidc/Makefile || true
+        sed -i '/msm_vdec/d' drivers/media/platform/msm/vidc/Makefile || true
+        sed -i '/msm_venc/d' drivers/media/platform/msm/vidc/Makefile || true
+        sed -i '/msm_vidc_debug/d' drivers/media/platform/msm/vidc/Makefile || true
+        sed -i '/msm_vidc_res_parse/d' drivers/media/platform/msm/vidc/Makefile || true
+        sed -i '/vidc_hfi/d' drivers/media/platform/msm/vidc/Makefile || true
+        sed -i '/msm_vidc_clocks/d' drivers/media/platform/msm/vidc/Makefile || true
+
+        # Remove entire vidc directory if it's empty
+        rm -rf drivers/media/platform/msm/vidc || true
+        sed -i '/vidc/d' drivers/media/platform/msm/Makefile || true
+
+        # Remove problematic esoc drivers (depend on esoc_clink)
+        rm -rf drivers/esoc/esoc_dev.c || true
+        rm -rf drivers/esoc/esoc_client.c || true
+        rm -rf drivers/esoc/esoc-mdm-drv.c || true
+        rm -rf drivers/esoc/esoc-mdm-4x.c || true
+        rm -rf drivers/esoc/esoc_bus.c || true
+        sed -i '/esoc_dev/d' drivers/esoc/Makefile || true
+        sed -i '/esoc_client/d' drivers/esoc/Makefile || true
+        sed -i '/esoc-mdm-drv/d' drivers/esoc/Makefile || true
+        sed -i '/esoc-mdm-4x/d' drivers/esoc/Makefile || true
+        sed -i '/esoc_bus/d' drivers/esoc/Makefile || true
+
+        # Remove entire esoc directory if it's empty
+        rm -rf drivers/esoc || true
+        sed -i '/esoc/d' drivers/Makefile || true
+
         # Remove problematic glink drivers (depend on tracer_pkt)
         rm -rf drivers/soc/qcom/glink.c || true
         rm -rf drivers/soc/qcom/glink_loopback_server.c || true
