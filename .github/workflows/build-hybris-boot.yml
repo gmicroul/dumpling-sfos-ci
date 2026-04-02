@@ -155,6 +155,10 @@ jobs:
         CONFIG_IP6_NF_IPTABLES=y
         CONFIG_KEYS=y
         CONFIG_SECCOMP=y
+
+        # Disable EFI stub to avoid linking errors
+        CONFIG_EFI=n
+        CONFIG_EFI_STUB=n
         EOF
 
         # Show added config
@@ -205,6 +209,10 @@ jobs:
         sed -i '/adreno_trace\.o/d' drivers/gpu/msm/Makefile || true
         sed -i '/adreno\.o/d' drivers/gpu/msm/Makefile || true
 
+        # Remove all kgsl-related files to avoid undefined references
+        find drivers/gpu/msm -name "*kgsl*" -delete || true
+        find drivers/gpu/msm -name "*adreno*" -delete || true
+
         # Remove problematic camera drivers (not needed for basic boot)
         sed -i '/camera/d' drivers/media/platform/msm/Makefile || true
 
@@ -216,6 +224,9 @@ jobs:
 
         # Remove problematic USB gadget configfs driver (not needed for basic boot)
         sed -i '/configfs\.o/d' drivers/usb/gadget/Makefile || true
+
+        # Remove problematic USB gadget function drivers (not needed for basic boot)
+        sed -i '/f_mtp\.o/d' drivers/usb/gadget/function/Makefile || true
 
         # Build kernel only (skip device tree to avoid interposer errors)
         make -j$(nproc) Image.gz
