@@ -198,10 +198,12 @@ jobs:
         # Remove problematic mdss-dsi-pll-10nm driver
         sed -i '/mdss-dsi-pll-10nm/d' drivers/clk/qcom/mdss/Makefile || true
 
-        # Remove problematic kgsl drivers (GPU - not needed for basic boot)
+        # Remove problematic kgsl and adreno drivers (GPU - not needed for basic boot)
         sed -i '/kgsl_trace\.o/d' drivers/gpu/msm/Makefile || true
         sed -i '/kgsl_events\.o/d' drivers/gpu/msm/Makefile || true
         sed -i '/kgsl\.o/d' drivers/gpu/msm/Makefile || true
+        sed -i '/adreno_trace\.o/d' drivers/gpu/msm/Makefile || true
+        sed -i '/adreno\.o/d' drivers/gpu/msm/Makefile || true
 
         # Build kernel only (skip device tree to avoid interposer errors)
         make -j$(nproc) Image.gz
