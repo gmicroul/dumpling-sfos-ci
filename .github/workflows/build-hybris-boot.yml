@@ -211,6 +211,9 @@ jobs:
         # Remove problematic IPA drivers (IP Accelerator - not needed for basic boot)
         sed -i '/ipa/d' drivers/platform/msm/Makefile || true
 
+        # Remove problematic tracer_pkt driver (not needed for basic boot)
+        sed -i '/tracer_pkt/d' drivers/soc/qcom/Makefile || true
+
         # Build kernel only (skip device tree to avoid interposer errors)
         make -j$(nproc) Image.gz
 
