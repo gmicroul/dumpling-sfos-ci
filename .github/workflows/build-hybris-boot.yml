@@ -198,7 +198,8 @@ jobs:
         # Remove problematic mdss-dsi-pll-10nm driver
         sed -i '/mdss-dsi-pll-10nm/d' drivers/clk/qcom/mdss/Makefile || true
 
-        make -j$(nproc)
+        # Build kernel only (skip device tree)
+        make -j$(nproc) Image.gz-dtb
 
         # Check if kernel image was built
         if [ ! -f arch/arm64/boot/Image.gz-dtb ]; then
