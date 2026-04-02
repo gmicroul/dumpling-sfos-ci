@@ -205,6 +205,9 @@ jobs:
         # Remove entire msm GPU directory (kgsl/adreno - not needed for basic boot)
         rm -rf drivers/gpu/msm || true
 
+        # Remove Kconfig reference to deleted msm directory
+        sed -i '/source "drivers\/gpu\/msm\/Kconfig"/d' drivers/video/Kconfig || true
+
         # Remove problematic camera drivers (not needed for basic boot)
         sed -i '/camera/d' drivers/media/platform/msm/Makefile || true
 
