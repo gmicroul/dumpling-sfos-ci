@@ -256,6 +256,8 @@ jobs:
         rm -rf drivers/sensors || true
         # Remove sensors reference from Makefile
         sed -i '/sensors/d' drivers/Makefile || true
+        # Remove Kconfig reference to deleted sensors directory
+        sed -i '/source "drivers\/sensors\/Kconfig"/d' drivers/Kconfig || true
 
         # Remove problematic ipc_router_core driver (depends on subsystem)
         rm -rf net/ipc_router/ipc_router_core.c || true
