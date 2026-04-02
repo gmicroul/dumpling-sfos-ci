@@ -252,6 +252,10 @@ jobs:
         # Remove problematic sensors_ssc driver (depends on subsystem)
         rm -rf drivers/sensors/sensors_ssc.c || true
         sed -i '/sensors_ssc/d' drivers/sensors/Makefile || true
+        # Remove entire sensors directory if it's empty
+        rm -rf drivers/sensors || true
+        # Remove sensors reference from Makefile
+        sed -i '/sensors/d' drivers/Makefile || true
 
         # Remove problematic ipc_router_core driver (depends on subsystem)
         rm -rf net/ipc_router/ipc_router_core.c || true
