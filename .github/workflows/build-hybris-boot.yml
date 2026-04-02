@@ -201,16 +201,16 @@ jobs:
         # Remove problematic kgsl driver
         sed -i '/kgsl_trace\.o/d' drivers/gpu/msm/Makefile || true
 
-        # Build kernel only (skip device tree)
-        make -j$(nproc) Image.gz-dtb
+        # Build kernel only (skip device tree to avoid interposer errors)
+        make -j$(nproc) Image.gz
 
         # Check if kernel image was built
-        if [ ! -f arch/arm64/boot/Image.gz-dtb ]; then
+        if [ ! -f arch/arm64/boot/Image.gz ]; then
           echo "Error: Kernel image not found"
           exit 1
         fi
 
-        ls -lh arch/arm64/boot/Image.gz-dtb
+        ls -lh arch/arm64/boot/Image.gz
 
     - name: Create boot image
       run: |
@@ -220,7 +220,7 @@ jobs:
         mkdir -p output
 
         # Copy kernel image
-        cp kernel/oneplus/sdm845/arch/arm64/boot/Image.gz-dtb output/
+        cp kernel/oneplus/sdm845/arch/arm64/boot/Image.gz output/
 
         # Note: For a complete boot image, you would need:
         # - Original boot.img from device
@@ -234,7 +234,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: kernel-${{ env.DEVICE }}-${{ env.RELEASE }}
-        path: output/Image.gz-dtb
+        path: output/Image.gz
         retention-days: 30
 
     - name: Upload kernel config
