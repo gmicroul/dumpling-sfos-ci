@@ -241,6 +241,7 @@ jobs:
 
         # Remove problematic USB BAM driver (depends on IPA)
         rm -rf drivers/platform/msm/usb_bam.c || true
+        sed -i '/usb_bam/d' drivers/platform/msm/Makefile || true
 
         # Remove problematic SPS driver (Stream Processor System - not needed for basic boot)
         rm -rf drivers/platform/msm/sps || true
