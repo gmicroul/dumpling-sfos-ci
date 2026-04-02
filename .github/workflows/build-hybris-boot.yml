@@ -239,6 +239,21 @@ jobs:
         rm -rf drivers/usb/gadget/function/f_gsi.c || true
         rm -rf drivers/usb/gadget/function/f_qdss.c || true
 
+        # Remove references to deleted USB gadget function drivers from Makefile
+        sed -i '/f_ptp/d' drivers/usb/gadget/function/Makefile || true
+        sed -i '/f_ncm/d' drivers/usb/gadget/function/Makefile || true
+        sed -i '/f_mass_storage/d' drivers/usb/gadget/function/Makefile || true
+        sed -i '/f_fs/d' drivers/usb/gadget/function/Makefile || true
+        sed -i '/f_midi/d' drivers/usb/gadget/function/Makefile || true
+        sed -i '/f_hid/d' drivers/usb/gadget/function/Makefile || true
+        sed -i '/f_audio_source/d' drivers/usb/gadget/function/Makefile || true
+        sed -i '/f_accessory/d' drivers/usb/gadget/function/Makefile || true
+        sed -i '/f_diag/d' drivers/usb/gadget/function/Makefile || true
+        sed -i '/f_cdev/d' drivers/usb/gadget/function/Makefile || true
+        sed -i '/f_ccid/d' drivers/usb/gadget/function/Makefile || true
+        sed -i '/f_gsi/d' drivers/usb/gadget/function/Makefile || true
+        sed -i '/f_qdss/d' drivers/usb/gadget/function/Makefile || true
+
         # Remove problematic USB BAM driver (depends on IPA)
         rm -rf drivers/platform/msm/usb_bam.c || true
         sed -i '/usb_bam/d' drivers/platform/msm/Makefile || true
