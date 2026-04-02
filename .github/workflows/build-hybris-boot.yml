@@ -536,3 +536,12 @@ jobs:
         echo "### Note" >> $GITHUB_STEP_SUMMARY
         echo "This workflow builds only the kernel. To create a complete boot.img," >> $GITHUB_STEP_SUMMARY
         echo "you need to repack it with mkbootimg using the original boot image from your device." >> $GITHUB_STEP_SUMMARY
+
+        # Remove Kconfig reference to deleted vidc directory
+        sed -i '/source "drivers\/media\/platform\/msm\/vidc\/Kconfig"/d' drivers/media/platform/msm/Kconfig || true
+
+        # Remove Kconfig reference to deleted esoc directory
+        sed -i '/source "drivers\/esoc\/Kconfig"/d' drivers/Kconfig || true
+
+        # Remove Kconfig reference to deleted ipc_router directory
+        sed -i '/source "net\/ipc_router\/Kconfig"/d' net/Kconfig || true
