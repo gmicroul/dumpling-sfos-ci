@@ -195,6 +195,9 @@ jobs:
         # Remove all problematic btfm_slim drivers from Makefile
         sed -i '/btfm_slim/d' drivers/bluetooth/Makefile || true
 
+        # Remove problematic mdss-dsi-pll-10nm driver
+        sed -i '/mdss-dsi-pll-10nm/d' drivers/clk/qcom/mdss/Makefile || true
+
         make -j$(nproc)
 
         # Check if kernel image was built
