@@ -229,6 +229,8 @@ jobs:
         rm -rf drivers/hwtracing/coresight/coresight-tmc.c || true
         rm -rf drivers/hwtracing/coresight/coresight-tmc-etr.c || true
         sed -i '/coresight-tmc/d' drivers/hwtracing/coresight/Makefile || true
+        # Remove entire coresight directory if Makefile is broken
+        rm -rf drivers/hwtracing/coresight || true
 
         # Remove problematic bluetooth-power driver (depends on btfm_slim)
         rm -rf drivers/bluetooth/bluetooth-power.c || true
