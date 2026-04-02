@@ -207,6 +207,26 @@ jobs:
         rm -rf drivers/soc/qcom/glink_loopback_server.c || true
         sed -i '/glink/d' drivers/soc/qcom/Makefile || true
 
+        # Remove problematic spcom driver (depends on glink)
+        rm -rf drivers/soc/qcom/spcom.c || true
+        sed -i '/spcom/d' drivers/soc/qcom/Makefile || true
+
+        # Remove problematic subsystem_restart driver (depends on sysmon)
+        rm -rf drivers/soc/qcom/subsystem_restart.c || true
+        sed -i '/subsystem_restart/d' drivers/soc/qcom/Makefile || true
+
+        # Remove problematic adsprpc driver (depends on glink)
+        rm -rf drivers/char/adsprpc.c || true
+        sed -i '/adsprpc/d' drivers/char/Makefile || true
+
+        # Remove problematic crypto drivers (depend on sps)
+        rm -rf drivers/crypto/msm/qce50.c || true
+        rm -rf drivers/crypto/msm/qcedev.c || true
+        rm -rf drivers/crypto/msm/qcrypto.c || true
+        sed -i '/qce50/d' drivers/crypto/msm/Makefile || true
+        sed -i '/qcedev/d' drivers/crypto/msm/Makefile || true
+        sed -i '/qcrypto/d' drivers/crypto/msm/Makefile || true
+
         # Remove problematic slimbus drivers (depend on sps)
         rm -rf drivers/slimbus/slim-msm.c || true
         rm -rf drivers/slimbus/slim-msm-ngd.c || true
@@ -238,6 +258,10 @@ jobs:
         # Remove problematic bluetooth-power driver (depends on btfm_slim)
         rm -rf drivers/bluetooth/bluetooth-power.c || true
         sed -i '/bluetooth-power/d' drivers/bluetooth/Makefile || true
+
+        # Remove problematic esoc driver (depends on sysmon)
+        rm -rf drivers/esoc/esoc-mdm-4x.c || true
+        sed -i '/esoc-mdm-4x/d' drivers/esoc/Makefile || true
 
         # Remove problematic power supply drivers (depend on external functions)
         rm -rf drivers/power/supply/qcom/qpnp-fg-gen3.c || true
