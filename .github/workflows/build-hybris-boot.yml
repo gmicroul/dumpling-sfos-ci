@@ -232,6 +232,9 @@ jobs:
         # Remove entire coresight directory if Makefile is broken
         rm -rf drivers/hwtracing/coresight || true
 
+        # Remove Kconfig reference to deleted coresight directory
+        sed -i '/source "drivers\/hwtracing\/coresight\/Kconfig"/d' arch/arm64/Kconfig.debug || true
+
         # Remove problematic bluetooth-power driver (depends on btfm_slim)
         rm -rf drivers/bluetooth/bluetooth-power.c || true
         sed -i '/bluetooth-power/d' drivers/bluetooth/Makefile || true
