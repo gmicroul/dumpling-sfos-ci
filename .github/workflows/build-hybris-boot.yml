@@ -213,15 +213,34 @@ jobs:
 
         # Remove problematic IPA drivers (IP Accelerator - not needed for basic boot)
         sed -i '/ipa/d' drivers/platform/msm/Makefile || true
+        rm -rf drivers/platform/msm/ipa || true
 
         # Remove problematic tracer_pkt driver (not needed for basic boot)
         sed -i '/tracer_pkt/d' drivers/soc/qcom/Makefile || true
+        rm -rf drivers/soc/qcom/tracer_pkt* || true
 
         # Remove problematic USB gadget configfs driver (not needed for basic boot)
         sed -i '/configfs\.o/d' drivers/usb/gadget/Makefile || true
 
         # Remove problematic USB gadget function drivers (not needed for basic boot)
         sed -i '/f_mtp\.o/d' drivers/usb/gadget/function/Makefile || true
+        rm -rf drivers/usb/gadget/function/f_mtp.c || true
+        rm -rf drivers/usb/gadget/function/f_ptp.c || true
+        rm -rf drivers/usb/gadget/function/f_ncm.c || true
+        rm -rf drivers/usb/gadget/function/f_mass_storage.c || true
+        rm -rf drivers/usb/gadget/function/f_fs.c || true
+        rm -rf drivers/usb/gadget/function/f_midi.c || true
+        rm -rf drivers/usb/gadget/function/f_hid.c || true
+        rm -rf drivers/usb/gadget/function/f_audio_source.c || true
+        rm -rf drivers/usb/gadget/function/f_accessory.c || true
+        rm -rf drivers/usb/gadget/function/f_diag.c || true
+        rm -rf drivers/usb/gadget/function/f_cdev.c || true
+        rm -rf drivers/usb/gadget/function/f_ccid.c || true
+        rm -rf drivers/usb/gadget/function/f_gsi.c || true
+        rm -rf drivers/usb/gadget/function/f_qdss.c || true
+
+        # Remove problematic USB BAM driver (depends on IPA)
+        rm -rf drivers/platform/msm/usb_bam.c || true
 
         # Build kernel only (skip device tree to avoid interposer errors)
         make -j$(nproc) Image.gz
