@@ -244,6 +244,7 @@ jobs:
 
         # Remove problematic SPS driver (Stream Processor System - not needed for basic boot)
         rm -rf drivers/platform/msm/sps || true
+        sed -i '/sps/d' drivers/platform/msm/Makefile || true
 
         # Build kernel only (skip device tree to avoid interposer errors)
         make -j$(nproc) Image.gz
