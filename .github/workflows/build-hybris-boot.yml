@@ -202,16 +202,11 @@ jobs:
         # Remove problematic mdss-dsi-pll-10nm driver
         sed -i '/mdss-dsi-pll-10nm/d' drivers/clk/qcom/mdss/Makefile || true
 
-        # Remove problematic kgsl and adreno drivers (GPU - not needed for basic boot)
-        sed -i '/kgsl_trace\.o/d' drivers/gpu/msm/Makefile || true
-        sed -i '/kgsl_events\.o/d' drivers/gpu/msm/Makefile || true
-        sed -i '/kgsl\.o/d' drivers/gpu/msm/Makefile || true
-        sed -i '/adreno_trace\.o/d' drivers/gpu/msm/Makefile || true
-        sed -i '/adreno\.o/d' drivers/gpu/msm/Makefile || true
-
-        # Remove all kgsl-related files to avoid undefined references
+        # Remove all kgsl and adreno related files and dependencies
         find drivers/gpu/msm -name "*kgsl*" -delete || true
         find drivers/gpu/msm -name "*adreno*" -delete || true
+        sed -i '/kgsl/d' drivers/gpu/msm/Makefile || true
+        sed -i '/adreno/d' drivers/gpu/msm/Makefile || true
 
         # Remove problematic camera drivers (not needed for basic boot)
         sed -i '/camera/d' drivers/media/platform/msm/Makefile || true
