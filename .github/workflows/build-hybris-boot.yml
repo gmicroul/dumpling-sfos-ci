@@ -222,6 +222,8 @@ jobs:
         # Remove problematic cdsp-loader driver (depends on subsystem)
         rm -rf drivers/soc/qcom/qdsp6v2/cdsp-loader.c || true
         sed -i '/cdsp-loader/d' drivers/soc/qcom/qdsp6v2/Makefile || true
+        # Remove entire qdsp6v2 directory if it's empty
+        rm -rf drivers/soc/qcom/qdsp6v2 || true
 
         # Remove problematic peripheral-loader driver (depends on subsystem)
         rm -rf drivers/soc/qcom/peripheral-loader.c || true
