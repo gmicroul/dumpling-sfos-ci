@@ -215,6 +215,48 @@ jobs:
         rm -rf drivers/soc/qcom/subsystem_restart.c || true
         sed -i '/subsystem_restart/d' drivers/soc/qcom/Makefile || true
 
+        # Remove problematic spss_utils driver (depends on subsystem)
+        rm -rf drivers/soc/qcom/spss_utils.c || true
+        sed -i '/spss_utils/d' drivers/soc/qcom/Makefile || true
+
+        # Remove problematic cdsp-loader driver (depends on subsystem)
+        rm -rf drivers/soc/qcom/qdsp6v2/cdsp-loader.c || true
+        sed -i '/cdsp-loader/d' drivers/soc/qcom/qdsp6v2/Makefile || true
+
+        # Remove problematic peripheral-loader driver (depends on subsystem)
+        rm -rf drivers/soc/qcom/peripheral-loader.c || true
+        sed -i '/peripheral-loader/d' drivers/soc/qcom/Makefile || true
+
+        # Remove problematic subsys-pil-tz driver (depends on subsystem)
+        rm -rf drivers/soc/qcom/subsys-pil-tz.c || true
+        sed -i '/subsys-pil-tz/d' drivers/soc/qcom/Makefile || true
+
+        # Remove problematic pil-q6v5-mss driver (depends on subsystem)
+        rm -rf drivers/soc/qcom/pil-q6v5-mss.c || true
+        sed -i '/pil-q6v5-mss/d' drivers/soc/qcom/Makefile || true
+
+        # Remove problematic vidc drivers (depends on subsystem)
+        rm -rf drivers/media/platform/msm/vidc/msm_vidc_common.c || true
+        rm -rf drivers/media/platform/msm/vidc/venus_hfi.c || true
+        sed -i '/msm_vidc_common/d' drivers/media/platform/msm/vidc/Makefile || true
+        sed -i '/venus_hfi/d' drivers/media/platform/msm/vidc/Makefile || true
+
+        # Remove problematic esoc_bus driver (depends on subsystem)
+        rm -rf drivers/esoc/esoc_bus.c || true
+        sed -i '/esoc_bus/d' drivers/esoc/Makefile || true
+
+        # Remove problematic sensors_ssc driver (depends on subsystem)
+        rm -rf drivers/sensors/sensors_ssc.c || true
+        sed -i '/sensors_ssc/d' drivers/sensors/Makefile || true
+
+        # Remove problematic ipc_router_core driver (depends on subsystem)
+        rm -rf net/ipc_router/ipc_router_core.c || true
+        sed -i '/ipc_router_core/d' net/ipc_router/Makefile || true
+
+        # Remove problematic dm-req-crypt driver (depends on qcrypto)
+        rm -rf drivers/md/dm-req-crypt.c || true
+        sed -i '/dm-req-crypt/d' drivers/md/Makefile || true
+
         # Remove problematic adsprpc driver (depends on glink)
         rm -rf drivers/char/adsprpc.c || true
         sed -i '/adsprpc/d' drivers/char/Makefile || true
