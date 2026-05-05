@@ -1,21 +1,29 @@
-name: Build sailfishos for dumpling-new
+name: Build sailfishos for dumpling
+
 on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
-      set_example:
-        description: "oneplus"
+      release:
+        description: "SFOS release version"
         required: true
-        default: "dumpling"
+        default: "3.4.0.24"
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Set environment variables
+        run: |
+          source ./dumpling.env
+          echo "RELEASE=${RELEASE}" >> $GITHUB_ENV
+          echo "DEVICE=${DEVICE}" >> $GITHUB_ENV
+          echo "PORT_ARCH=${PORT_ARCH}" >> $GITHUB_ENV
 
       - name: Set up Docker container
         run: |
@@ -28,36 +36,43 @@ jobs:
 
       - name: Run build inside Docker
         run: |
-          sudo docker exec sailfish-sdk sh -c "cd /workspace && source ./dumpling.env && sudo bash ./run-mic.sh"
+          sudo docker exec sailfish-sdk sh -c "cd /workspace && sudo bash ./run-mic.sh"
 
-      - name: List files in Docker container
+      - name: List output files
         run: |
-          sudo docker exec sailfish-sdk ls -R /workspace  # List files recursively to verify output location
+          sudo docker exec sailfish-sdk find /workspace/sfe-${{ env.DEVICE }}-${{ env.RELEASE }}/ -type f -name "*.zip" -o -name "*.md5sum" -o -name "*.sha1sum" -o -name "*.sha256sum" | sort
 
       - name: Archive artifacts
         run: |
-          # Check the output directory inside Docker and then copy it
-          sudo docker exec sailfish-sdk ls -ltrh /workspace/sfe-dumpling-3.4.0.24/
-          # Adjust the path based on the output of the previous step
-          sudo mkdir -p /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts/
-          sudo docker cp sailfish-sdk:/workspace/sfe-dumpling-3.4.0.24/sailfishos-3.4.0.24-20250407-dumpling.zip /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts/
+          OUTPUT_DIR="/home/runner/work/${GITHUB_REPOSITORY#*/}/${GITHUB_REPOSITORY#*/}/artifacts"
+          sudo mkdir -p "$OUTPUT_DIR"
+          sudo docker exec sailfish-sdk sh -c "cd /workspace/sfe-${{ env.DEVICE }}-${{ env.RELEASE }}/ && ls *.zip 2>/dev/null" | while read f; do
+            sudo docker cp "sailfish-sdk:/workspace/sfe-${{ env.DEVICE }}-${{ env.RELEASE }}/$f" "$OUTPUT_DIR/"
+          done
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-dumpling-sailfishos
-          path: /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts/*.zip
+          path: /home/runner/work/**/artifacts/*.zip
 
-      - name: Cleanup
-        run: |
-          sudo docker stop sailfish-sdk
-          sudo docker rm sailfish-sdk
+      - name: Upload checksums
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-checksums
+          path: /home/runner/work/**/artifacts/*.md5sum
+          if-no-files-found: ignore
+
       - name: Upload image to Release
         uses: ncipollo/release-action@main
         with:
           tag: SailfishOS_for_dumpling
-          artifacts: /home/runner/work/dumpling-sfos-ci/dumpling-sfos-ci/artifacts/*.zip
+          artifacts: /home/runner/work/**/artifacts/*.zip
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          body: |
-            SailfishOS_for_dumpling
+
+      - name: Cleanup
+        if: always()
+        run: |
+          sudo docker stop sailfish-sdk 2>/dev/null || true
+          sudo docker rm sailfish-sdk 2>/dev/null || true
