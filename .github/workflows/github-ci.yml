@@ -7,7 +7,7 @@ on:
       release:
         description: "SFOS release version"
         required: true
-        default: "3.4.0.24"
+        default: "5.1.0.5"
 
 jobs:
   build:
