@@ -1,0 +1,104 @@
+name: Build sailfishos for dumpling (docker-rootless)
+
+# 在原 github-ci.yml 基础上新增：
+#  1. 构建容器权限/网络加固（privileged + 外网连通性检查 + workspace 权限修复）
+#  2. 刷机包内 docker 权限修复（docker 组 + socket 0660）
+#  3. defaultuser rootless 支持（subuid/subgid + linger + firstboot service）
+#  4. 容器外网访问（ip_forward sysctl + NAT/MASQUERADE service + daemon.json）
+# 与原 CI 共存，产物名带 -docker 后缀，Release tag 独立，不覆盖原包。
+
+on:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "SFOS release version"
+        required: true
+        default: "3.4.0.24"
+  repository_dispatch:
+
+jobs:
+  build-docker:
+    runs-on: ubuntu-22.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set environment variables
+        run: |
+          source ./dumpling.env
+          echo "RELEASE=${RELEASE}" >> $GITHUB_ENV
+          echo "DEVICE=${DEVICE}" >> $GITHUB_ENV
+          echo "PORT_ARCH=${PORT_ARCH}" >> $GITHUB_ENV
+          echo "EXTRA_NAME=-docker" >> $GITHUB_ENV
+
+      - name: Set up Docker container (privileged + net + cgroup)
+        run: |
+          sudo docker pull coderus/sailfishos-platform-sdk-base:latest
+          sudo docker run --privileged \
+            --name sailfish-sdk-docker \
+            --cgroupns=host \
+            -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
+            --sysctl net.ipv4.ip_forward=1 \
+            --dns=8.8.8.8 --dns=1.1.1.1 \
+            -d coderus/sailfishos-platform-sdk-base:latest tail -f /dev/null
+          # 构建容器外网连通性检查（repo.merproject.org / releases.jolla.com 必须可达）
+          sudo docker exec sailfish-sdk-docker sh -c "getent hosts repo.merproject.org && getent hosts releases.jolla.com && echo NET-OK"
+
+      - name: Copy files into Docker container + 权限修复
+        run: |
+          sudo docker cp . sailfish-sdk-docker:/workspace
+          # workspace 权限修复：保证 SDK 内可读可执行（rootless/不同 uid 场景）
+          sudo docker exec sailfish-sdk-docker sh -c "chmod -R a+rX /workspace && chmod +x /workspace/run-mic.sh /workspace/scripts/*.py 2>/dev/null; ls -l /workspace"
+
+      - name: Patch kickstart (docker 权限/rootless/NAT 注入)
+        run: |
+          sudo docker exec sailfish-sdk-docker sh -c "cd /workspace && python3 scripts/patch-ks-docker.py && grep -c 90_docker_rootless_nat 'Jolla-@RELEASE@-dumpling-@ARCH@.ks'"
+
+      - name: Run build inside Docker
+        run: |
+          sudo docker exec sailfish-sdk-docker sh -c "cd /workspace && EXTRA_NAME=-docker sudo -E bash ./run-mic.sh"
+
+      - name: List output files
+        run: |
+          sudo docker exec sailfish-sdk-docker find /workspace/sfe-${{ env.DEVICE }}-${{ env.RELEASE }}-docker/ -type f | sort
+
+      - name: Archive artifacts
+        run: |
+          OUTPUT_DIR="/home/runner/work/${GITHUB_REPOSITORY#*/}/${GITHUB_REPOSITORY#*/}/artifacts-docker"
+          sudo mkdir -p "$OUTPUT_DIR"
+          sudo docker exec sailfish-sdk-docker sh -c "cd /workspace/sfe-${{ env.DEVICE }}-${{ env.RELEASE }}-docker/ && ls *.zip 2>/dev/null" | while read f; do
+            sudo docker cp "sailfish-sdk-docker:/workspace/sfe-${{ env.DEVICE }}-${{ env.RELEASE }}-docker/$f" "$OUTPUT_DIR/"
+            sudo docker cp "sailfish-sdk-docker:/workspace/sfe-${{ env.DEVICE }}-${{ env.RELEASE }}-docker/$f.md5sum" "$OUTPUT_DIR/" 2>/dev/null || true
+            sudo docker cp "sailfish-sdk-docker:/workspace/sfe-${{ env.DEVICE }}-${{ env.RELEASE }}-docker/$f.sha1sum" "$OUTPUT_DIR/" 2>/dev/null || true
+            sudo docker cp "sailfish-sdk-docker:/workspace/sfe-${{ env.DEVICE }}-${{ env.RELEASE }}-docker/$f.sha256sum" "$OUTPUT_DIR/" 2>/dev/null || true
+          done
+          ls -lh "$OUTPUT_DIR/"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-dumpling-sailfishos-docker
+          path: /home/runner/work/**/artifacts-docker/*.zip
+
+      - name: Upload checksums
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-checksums-docker
+          path: /home/runner/work/**/artifacts-docker/*.md5sum
+          if-no-files-found: ignore
+
+      - name: Upload image to Release
+        uses: ncipollo/release-action@main
+        with:
+          tag: SailfishOS_for_dumpling-docker
+          artifacts: /home/runner/work/**/artifacts-docker/*.zip
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cleanup
+        if: always()
+        run: |
+          sudo docker stop sailfish-sdk-docker 2>/dev/null || true
+          sudo docker rm sailfish-sdk-docker 2>/dev/null || true
